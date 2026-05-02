@@ -1,0 +1,103 @@
+---
+title: "Share, export, and collaborate on Getpeeko insights"
+description: "Share AI-generated insights with your team, create shareable reports for external stakeholders, and export Getpeeko data as PDF, CSV, or via the REST API."
+sidebarTitle: "Sharing Results"
+---
+
+Once Getpeeko surfaces insights from an analysis run, you'll often want to share those findings with colleagues, stakeholders, or clients. Getpeeko gives you several ways to do this: collaborate directly with teammates inside the platform, create polished reports, share public links with people outside your workspace, and export data in the format that fits your workflow.
+
+## Sharing with teammates
+
+Every member you add to your workspace can see all projects and their insights by default. To add someone to your workspace, go to **Settings > Team** and click **Invite Member**. Enter their email address and select a role. They'll receive an invitation email and, once accepted, will have immediate access to all projects in the workspace.
+
+Within any insight card, you can leave comments to discuss findings with your team. Type `@` followed by a teammate's name to mention them in a comment — they'll receive a notification so nothing gets missed. Comments are visible to all workspace members and are attached to the specific insight card for easy reference.
+
+## Creating a report
+
+A report is a curated collection of insights that you want to present or preserve. Reports live in the **Reports** tab of your project and can be shared as links or exported.
+
+<Steps>
+  <Step title="Open your project and go to the Insights tab">
+    Navigate to the project that contains the analysis run you want to share. Click the **Insights** tab to see the full list of AI-generated findings.
+  </Step>
+
+  <Step title="Select the insights to include">
+    Check the box on each insight card you want to add to the report. To include everything, click **Select all** at the top of the insights list. You can deselect individual cards after selecting all.
+  </Step>
+
+  <Step title="Click Create Report">
+    With at least one insight selected, click the **Create Report** button that appears in the action bar. This opens the report creation dialog.
+  </Step>
+
+  <Step title="Name the report and add an optional summary">
+    Give the report a clear, descriptive name — for example, "June Retention Analysis" or "Q2 Onboarding Findings for Leadership". Optionally add a summary paragraph that will appear at the top of the report to provide context for readers who weren't involved in the analysis.
+  </Step>
+
+  <Step title="Save the report">
+    Click **Save Report**. The report is now available in the **Reports** tab of your project. From there you can open it, share it, or export it at any time.
+  </Step>
+</Steps>
+
+## Sharing a report link
+
+Every report has a unique URL that you can share with anyone who has a Getpeeko account in your workspace. To share with people outside your organization, toggle on the **Public link** option on the report's settings panel.
+
+When the public link is active, anyone with the URL can view the report without logging in to Getpeeko. Viewers with a public link can read the report and inspect insight cards, but they cannot comment, edit, or access any other part of your workspace.
+
+You can control when the link expires:
+
+| Expiry option | Behavior |
+|---|---|
+| Never | Link remains active until you manually disable it |
+| 7 days | Link automatically deactivates 7 days after it was enabled |
+| 30 days | Link automatically deactivates 30 days after it was enabled |
+
+To disable a public link before it expires, toggle **Public link** off on the report settings panel. The link will immediately stop working.
+
+<Tip>
+  Public links are ideal for stakeholder presentations and client reviews. Share the link in a slide deck or email so recipients can explore the interactive report directly, rather than sending a static PDF.
+</Tip>
+
+## Exporting data
+
+<Tabs>
+  <Tab title="Export as PDF">
+    PDF export produces a formatted, print-ready version of a report — useful for presentations, board decks, or archiving.
+
+    <Steps>
+      <Step title="Open the report">
+        Go to the **Reports** tab in your project and open the report you want to export.
+      </Step>
+      <Step title="Click Export > PDF">
+        Click the **Export** button in the report toolbar and select **PDF** from the dropdown.
+      </Step>
+      <Step title="Download the file">
+        Getpeeko generates the PDF and starts a download automatically. The file includes your report name, summary, all selected insight cards, and supporting charts laid out for readability.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Export as CSV">
+    CSV export gives you the raw insight data and supporting metrics in a tabular format, suitable for further analysis in spreadsheets or BI tools.
+
+    <Steps>
+      <Step title="Go to the Insights tab">
+        Open your project and click the **Insights** tab. You can export all insights or apply filters first to export a specific subset.
+      </Step>
+      <Step title="Click Export > CSV">
+        Click the **Export** button in the insights toolbar and select **CSV**.
+      </Step>
+      <Step title="Download the file">
+        The exported CSV includes one row per insight, with columns for insight title, description, confidence score, category, supporting metric names, and supporting metric values. Date ranges and filter configurations used in the analysis run are included as metadata rows at the top of the file.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Export via API">
+    The Getpeeko REST API lets you programmatically retrieve insight data and integrate it into your own tools, dashboards, or data pipelines.
+
+    Use the `GET /projects/{project_id}/insights` endpoint to fetch insights for a given project. You can filter by confidence score, tags, and date range using query parameters.
+
+    For full request and response documentation, see the [Insights API reference](/api-reference/endpoints/insights).
+  </Tab>
+</Tabs>

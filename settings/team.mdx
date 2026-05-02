@@ -1,0 +1,107 @@
+---
+title: "Manage team members and roles in your Getpeeko workspace"
+description: "Invite team members, assign Admin or Member roles, remove users, and transfer workspace ownership from the Getpeeko Team settings page."
+sidebarTitle: "Team"
+---
+
+The **Team** settings page is where you manage who has access to your workspace and what they can do. Owners and Admins can invite new members, update roles, and remove access. Only the workspace Owner can transfer ownership or promote members to Admin.
+
+## Inviting team members
+
+<Steps>
+  <Step title="Open Team settings">
+    Navigate to **Settings** > **Team**.
+  </Step>
+  <Step title="Click Invite Member">
+    Click the **Invite Member** button in the top-right corner of the members list.
+  </Step>
+  <Step title="Enter email addresses">
+    Type one or more email addresses in the invitation field. To invite multiple people at once, separate addresses with commas.
+  </Step>
+  <Step title="Select a role">
+    Choose **Admin** or **Member** from the role dropdown. See the [Member roles](#member-roles) section below for a full breakdown of what each role can do.
+  </Step>
+  <Step title="Send the invitation">
+    Click **Send Invite**. Each invitee receives an email with a link to join your workspace. Invitation links expire after **7 days**. If a link expires, return to **Settings** > **Team** and resend the invitation.
+  </Step>
+</Steps>
+
+<Note>
+  The number of members you can invite depends on your workspace plan. If you have reached the member limit for your current plan, you will need to upgrade before sending additional invitations. Go to **Settings** > **Billing** to review your plan.
+</Note>
+
+## Member roles
+
+Getpeeko uses three roles to control access within a workspace.
+
+| Role | Can do | Cannot do |
+|------|--------|-----------|
+| **Owner** | Everything: manage members, projects, integrations, billing, and workspace settings; delete the workspace; promote members to Admin | — |
+| **Admin** | Invite and remove members, manage projects and integrations, view all insights and reports | Access billing settings, delete the workspace |
+| **Member** | View and run projects, view insights, export reports | Manage members or roles, manage integrations, access billing |
+
+Each workspace has exactly one Owner. All other members are either Admins or Members.
+
+## Changing a member's role
+
+<Steps>
+  <Step title="Open Team settings">
+    Navigate to **Settings** > **Team**.
+  </Step>
+  <Step title="Find the member">
+    Locate the person whose role you want to change in the members list.
+  </Step>
+  <Step title="Open the role dropdown">
+    Click the role badge next to their name to open the role selector.
+  </Step>
+  <Step title="Select the new role">
+    Choose **Admin** or **Member**. The change takes effect immediately.
+  </Step>
+</Steps>
+
+Owners and Admins can change a Member's role to Admin, and can demote an Admin back to Member. Only the workspace Owner can promote another member to Admin. Admins cannot modify the Owner's role.
+
+## Removing a member
+
+<Steps>
+  <Step title="Open Team settings">
+    Navigate to **Settings** > **Team**.
+  </Step>
+  <Step title="Find the member">
+    Locate the person you want to remove.
+  </Step>
+  <Step title="Remove them from the workspace">
+    Click the **···** menu next to their name and select **Remove from workspace**.
+  </Step>
+  <Step title="Confirm removal">
+    Click **Remove** in the confirmation dialog.
+  </Step>
+</Steps>
+
+Removed members lose access to the workspace immediately — they cannot view projects, insights, or any workspace data. Their past activity is retained: analysis runs they initiated, comments they left, and reports they exported remain visible to other members under their name.
+
+## Transferring ownership
+
+Each workspace has exactly one Owner. Transferring ownership passes full control — including billing access and the ability to delete the workspace — to another member.
+
+<Warning>
+  Ownership transfer is irreversible without the cooperation of the new Owner. Once you transfer ownership, you lose billing access and the ability to delete the workspace. You can only reclaim it if the new Owner transfers it back to you.
+</Warning>
+
+<Steps>
+  <Step title="Open Team settings">
+    Navigate to **Settings** > **Team**.
+  </Step>
+  <Step title="Find the current owner entry">
+    Locate your own entry at the top of the members list (marked **Owner**).
+  </Step>
+  <Step title="Initiate the transfer">
+    Click **Transfer Ownership** next to your name.
+  </Step>
+  <Step title="Select the new owner">
+    Choose the member you want to transfer ownership to from the dropdown. They must already be a member of the workspace.
+  </Step>
+  <Step title="Confirm the transfer">
+    Type the workspace name to confirm, then click **Transfer**. The selected member immediately becomes the Owner. Your role changes to Admin.
+  </Step>
+</Steps>

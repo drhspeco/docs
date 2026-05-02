@@ -1,0 +1,130 @@
+---
+title: "Getpeeko API rate limits, quotas, and retry handling"
+description: "Understand Getpeeko's per-plan rate limits and daily quotas, read response headers, and implement retry logic to handle 429 responses gracefully."
+sidebarTitle: "Rate Limits"
+---
+
+Getpeeko enforces rate limits on all API requests to ensure consistent performance for every user. Limits are applied per API key and vary depending on your plan. If your integration exceeds its limit, the API returns a `429 Too Many Requests` response. You can check your current usage at any time by reading the rate limit headers included in every response.
+
+## Rate limit tiers
+
+| Plan | Requests per minute | Requests per day |
+|------|--------------------:|----------------:|
+| Free | 60 | 5,000 |
+| Pro | 300 | 50,000 |
+| Enterprise | Custom | Custom |
+
+Limits reset on a rolling window basis. The exact reset time is available in the `X-RateLimit-Reset` response header.
+
+## Rate limit headers
+
+Every API response includes the following headers so you can monitor your usage:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | The maximum number of requests allowed in the current window |
+| `X-RateLimit-Remaining` | The number of requests remaining before you are rate limited |
+| `X-RateLimit-Reset` | Unix timestamp (UTC) at which the current window resets and your limit is restored |
+
+Example response headers:
+
+```bash
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 247
+X-RateLimit-Reset: 1746106860
+```
+
+## Handling 429 responses
+
+When you receive a `429` response, wait before retrying. Use exponential backoff — start with a short delay and double it on each subsequent failure — to avoid hammering the API and prolonging the lockout.
+
+Example `429` response body:
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "You have exceeded your request quota. Please wait before retrying.",
+    "retry_after": 14
+  }
+}
+```
+
+The `retry_after` field contains the number of seconds to wait before making your next request.
+
+<CodeGroup>
+
+```javascript javascript
+async function fetchWithRetry(url, options, maxRetries = 5) {
+  let delay = 1000; // start with 1 second
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const res = await fetch(url, options);
+
+    if (res.status !== 429) {
+      return res;
+    }
+
+    if (attempt === maxRetries) {
+      throw new Error(`Rate limit exceeded after ${maxRetries} retries`);
+    }
+
+    const body = await res.json();
+    const retryAfter = body.error?.retry_after;
+    const waitMs = retryAfter ? retryAfter * 1000 : delay;
+
+    console.log(`Rate limited. Retrying in ${waitMs}ms...`);
+    await new Promise(resolve => setTimeout(resolve, waitMs));
+    delay *= 2; // exponential backoff
+  }
+}
+
+// Usage
+const res = await fetchWithRetry('https://api.getpeeko.ai/v1/projects', {
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+});
+const data = await res.json();
+```
+
+```python python
+import requests
+import time
+
+def fetch_with_retry(url, headers, max_retries=5):
+    delay = 1  # start with 1 second
+
+    for attempt in range(max_retries + 1):
+        res = requests.get(url, headers=headers)
+
+        if res.status_code != 429:
+            return res
+
+        if attempt == max_retries:
+            raise Exception(f'Rate limit exceeded after {max_retries} retries')
+
+        body = res.json()
+        retry_after = body.get('error', {}).get('retry_after', delay)
+
+        print(f'Rate limited. Retrying in {retry_after}s...')
+        time.sleep(retry_after)
+        delay *= 2  # exponential backoff
+
+    return None
+
+# Usage
+res = fetch_with_retry(
+    'https://api.getpeeko.ai/v1/projects',
+    headers={'Authorization': 'Bearer YOUR_API_KEY'}
+)
+print(res.json())
+```
+
+</CodeGroup>
+
+<Tip>
+  Cache API responses wherever possible to reduce the total number of requests you make. For example, project lists and insight summaries rarely change within a short window — storing results locally for 30–60 seconds can significantly reduce your API usage.
+</Tip>
+
+<Note>
+  If your use case requires higher limits than your current plan provides, contact [support@getpeeko.ai](mailto:support@getpeeko.ai) to discuss Enterprise options or a custom quota.
+</Note>

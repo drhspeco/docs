@@ -1,0 +1,156 @@
+---
+title: "Connect your data sources and integrations to Getpeeko"
+description: "Connect Getpeeko to your analytics platforms, CRMs, and data tools to feed real audience data into your AI-powered analysis projects."
+sidebarTitle: "Integrations"
+---
+
+Integrations are the data pipelines that power your Getpeeko projects. By connecting Getpeeko to the tools your team already uses — analytics platforms, CRMs, product databases, or raw data files — you give the AI engine the behavioral signal it needs to generate meaningful insights. You can connect multiple integrations to a single workspace and use them across as many projects as you need.
+
+## Available integrations
+
+Getpeeko supports the following data sources out of the box:
+
+<CardGroup cols={2}>
+  <Card title="Google Analytics" icon="chart-line">
+    Import session, event, and conversion data from Google Analytics 4 properties.
+  </Card>
+  <Card title="Mixpanel" icon="chart-bar">
+    Pull event streams and funnel data using your Mixpanel project credentials.
+  </Card>
+  <Card title="HubSpot" icon="bullhorn">
+    Connect your HubSpot portal to analyze CRM contact behavior and lifecycle stages.
+  </Card>
+  <Card title="Salesforce" icon="cloud">
+    Bring in Salesforce opportunity and account data to enrich audience analysis.
+  </Card>
+  <Card title="Segment" icon="circle-nodes">
+    Stream event data directly from your Segment workspace into Getpeeko projects.
+  </Card>
+  <Card title="CSV upload" icon="file-csv">
+    Upload a CSV file for quick, one-off analyses without needing a live integration.
+  </Card>
+</CardGroup>
+
+<Note>
+  Amplitude, and the Getpeeko REST API are also supported as data sources. Amplitude follows the same credential-based setup as Mixpanel. For API-based ingestion, see the [API Reference](/api-reference/introduction).
+</Note>
+
+## Connecting an integration
+
+Navigate to **Settings > Integrations** and click **Add Integration** to get started. Then follow the steps for your integration type below.
+
+<Tabs>
+  <Tab title="Google Analytics">
+    Google Analytics uses OAuth 2.0, so no API keys are required.
+
+    <Steps>
+      <Step title="Open Integrations settings">
+        Go to **Settings > Integrations** and click **Add Integration**.
+      </Step>
+      <Step title="Select Google Analytics">
+        Find **Google Analytics** in the integration list and click it.
+      </Step>
+      <Step title="Authorize with Google">
+        Click **Authorize with Google**. A Google OAuth consent screen will open in a new window. Sign in with the Google account that has access to the GA4 properties you want to connect.
+      </Step>
+      <Step title="Grant permissions">
+        Review the requested permissions and click **Allow**. Getpeeko requests read-only access to your Analytics data. It does not modify any data in your Google account.
+      </Step>
+      <Step title="Select a property">
+        After authorization, Getpeeko will list all GA4 properties accessible to your account. Select the property you want to connect and click **Save Integration**.
+      </Step>
+    </Steps>
+
+    <Tip>
+      If you manage multiple GA4 properties, you can add each as a separate integration and use them in different projects.
+    </Tip>
+  </Tab>
+
+  <Tab title="Mixpanel">
+    Mixpanel uses credential-based authentication via a Project Token and Service Account.
+
+    <Steps>
+      <Step title="Open Integrations settings">
+        Go to **Settings > Integrations** and click **Add Integration**.
+      </Step>
+      <Step title="Select Mixpanel">
+        Find **Mixpanel** in the integration list and click it.
+      </Step>
+      <Step title="Retrieve your Mixpanel credentials">
+        In Mixpanel, go to **Settings > Project Settings** to find your **Project Token**. Then go to **Settings > Service Accounts** and create a new service account with at least **Analyst** role. Copy the service account username and secret.
+      </Step>
+      <Step title="Enter credentials in Getpeeko">
+        Paste your **Project Token**, **Service Account Username**, and **Service Account Secret** into the respective fields in Getpeeko. Optionally give the integration a display name so it's easy to identify in the list.
+      </Step>
+      <Step title="Test and save">
+        Click **Test Connection** to verify your credentials. Once the test passes, click **Save Integration**.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="HubSpot">
+    HubSpot uses OAuth 2.0. You'll select the specific HubSpot portal to connect during the flow.
+
+    <Steps>
+      <Step title="Open Integrations settings">
+        Go to **Settings > Integrations** and click **Add Integration**.
+      </Step>
+      <Step title="Select HubSpot">
+        Find **HubSpot** in the integration list and click it.
+      </Step>
+      <Step title="Authorize with HubSpot">
+        Click **Authorize with HubSpot**. A HubSpot OAuth consent screen will open. Log in with your HubSpot credentials if prompted.
+      </Step>
+      <Step title="Select your portal">
+        If your HubSpot account has access to multiple portals, select the portal you want to connect from the dropdown. Then click **Connect**.
+      </Step>
+      <Step title="Grant permissions and save">
+        Review the permissions Getpeeko requests (read-only access to contacts, companies, and deals) and click **Grant Access**. You'll be redirected back to Getpeeko, where the integration will appear in your list.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="CSV upload">
+    CSV uploads let you run a one-time analysis on any structured data file without configuring a live integration.
+
+    <Steps>
+      <Step title="Start a new project or open an existing one">
+        You can upload a CSV during project creation by selecting **Upload CSV** as your data source, or from an existing project by going to **Data Sources > Add Source > CSV Upload**.
+      </Step>
+      <Step title="Upload your file">
+        Drag and drop your CSV file onto the upload area, or click **Browse files** to select it from your filesystem. Files must be in UTF-8 encoded CSV format.
+
+        **Limits:**
+        - Maximum file size: 50 MB
+        - Maximum rows: 1,000,000
+        - Required: at least one column with a date or timestamp, and at least one column with a numeric or categorical event value
+      </Step>
+      <Step title="Map your columns">
+        Getpeeko will auto-detect common column names (such as `user_id`, `event_name`, `timestamp`, `value`). Review the mapping and correct any mismatches before proceeding.
+      </Step>
+      <Step title="Confirm and attach">
+        Click **Attach to Project** to finalize the upload. The file is stored securely in your workspace and can be reused across multiple analysis runs within the same project.
+      </Step>
+    </Steps>
+
+    <Note>
+      CSV uploads are static — they do not update automatically. If your data changes, upload a new file and run a fresh analysis.
+    </Note>
+  </Tab>
+</Tabs>
+
+## Managing integrations
+
+All connected integrations are listed under **Settings > Integrations**. From this page you can:
+
+- **View integration status** — each integration shows its last successful sync time and current connection health
+- **Test a connection** — click the three-dot menu next to any integration and select **Test Connection** to verify the credentials are still valid
+- **Disconnect an integration** — click the three-dot menu and select **Disconnect**; this removes the integration from Getpeeko but does not delete any analysis data already generated from it
+
+<Warning>
+  Disconnecting an integration in Getpeeko does not revoke Getpeeko's access at the source. For OAuth-based integrations (Google Analytics, HubSpot), you must also remove Getpeeko from the list of authorized apps in the third-party provider's settings to fully revoke access.
+</Warning>
+
+<Note>
+  The number of active integrations you can connect depends on your plan. The Free plan supports one integration at a time. Pro and Business plans support unlimited integrations. See **Settings > Billing** for your current plan details.
+</Note>

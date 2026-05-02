@@ -1,0 +1,90 @@
+---
+title: "Create and run your first analysis project in Getpeeko"
+description: "Learn how to create a Getpeeko project, connect a data source or upload a CSV, configure your analysis scope, and review AI-generated insights."
+sidebarTitle: "First Project"
+---
+
+A project is the core unit of work in Getpeeko. It connects to one or more data sources, defines the scope of your analysis, and produces AI-generated insights about your audience's behavior. This guide walks you through creating your first project from scratch and interpreting the results.
+
+<Note>
+  Before you begin, make sure you have an active Getpeeko workspace. You'll also need at least one data source connected under **Settings > Integrations**, or a CSV file ready to upload. If you haven't set up an integration yet, see the [Integrations guide](/guides/integrations).
+</Note>
+
+## Create and run your project
+
+<Steps>
+  <Step title="Navigate to Projects and create a new project">
+    From the Getpeeko dashboard, click **Projects** in the left sidebar. Then click **New Project** in the top-right corner of the Projects page.
+  </Step>
+
+  <Step title="Name your project and add a description">
+    Enter a name for your project. Choose something descriptive enough that teammates can understand its purpose at a glance — for example, "Q3 Activation Drop Investigation" or "New User Onboarding Funnel".
+
+    Optionally, add a description to provide more context about the goal of this analysis. Descriptions are visible to all workspace members and appear in the Projects list.
+  </Step>
+
+  <Step title="Select a data source or upload a CSV">
+    Choose how you want to feed data into this project:
+
+    - **Connected integration** — Select an existing integration such as Google Analytics, Mixpanel, or Amplitude from the dropdown. Only integrations you've already connected in **Settings > Integrations** will appear here.
+    - **CSV upload** — Click **Upload CSV** to drag and drop a file or browse your local filesystem. This is the fastest way to get started if you don't have an integration configured yet. Supported file size is up to 50 MB.
+
+    You can attach multiple data sources to a single project after the initial setup.
+  </Step>
+
+  <Step title="Configure your analysis scope">
+    Set the parameters that define what the AI engine will analyze:
+
+    - **Date range** — Select a start and end date. A 30–90 day window works well for most behavioral analyses.
+    - **Audience filters** — If your data source supports it, apply filters to narrow the analysis to a specific segment (for example, users on a paid plan, or users from a particular region). You can skip filters to analyze your full audience.
+
+    Getpeeko will display an estimated row count based on your selections, so you can gauge how long the analysis will take before you run it.
+  </Step>
+
+  <Step title="Run the analysis">
+    Click **Run Analysis**. The project status changes from **Pending** to **Running** immediately. Getpeeko queues your request and begins processing your data through the AI engine.
+
+    <Tip>
+      You don't need to stay on the page while the analysis runs. Getpeeko will send you a notification when it's complete. See [Notifications](/guides/notifications) for how to configure alerts.
+    </Tip>
+  </Step>
+
+  <Step title="Wait for the analysis to complete">
+    Analysis run time depends on the size of your dataset:
+
+    | Dataset size | Estimated time |
+    |---|---|
+    | Up to 10,000 rows | 10–30 seconds |
+    | 10,000–100,000 rows | 30–90 seconds |
+    | 100,000–1,000,000 rows | 2–5 minutes |
+
+    The status indicator in the project header updates in real time. Once the run finishes, the status changes to **Complete**. If something goes wrong, the status shows **Failed** with an error message explaining the cause.
+  </Step>
+
+  <Step title="Review your insights">
+    Once the analysis is complete, click the **Insights** tab inside your project. Getpeeko surfaces a ranked list of AI-generated findings about your audience and their behavior. Each insight card summarizes a key finding and includes supporting evidence drawn from your data.
+  </Step>
+</Steps>
+
+## Understanding your results
+
+The Insights tab is where Getpeeko presents everything the AI engine discovered during the analysis run. Here's what you'll find on the panel:
+
+**Insight cards** — Each card represents a single AI-generated finding. Cards are ranked by relevance and confidence, with the most actionable insights at the top. Click any card to expand it and see the full supporting evidence.
+
+**Confidence scores** — Every insight carries a confidence score from 0 to 100. A score above 80 indicates a strong, statistically supported finding. Scores in the 50–79 range suggest a notable pattern worth investigating further. Insights below 50 are surfaced for awareness but should be treated as exploratory signals.
+
+**Supporting charts** — Expanded insight cards include charts that visualize the underlying data pattern — for example, a time-series chart showing a spike in drop-off, or a cohort breakdown comparing behavior across segments. You can hover over data points for exact values.
+
+**Filters and sorting** — Use the filter bar above the insights list to show only high-confidence insights, filter by topic category (such as Engagement, Retention, or Acquisition), or search by keyword.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Share and export results" icon="share-nodes" href="/guides/sharing-results">
+    Create a report from your insights and share it with teammates or external stakeholders.
+  </Card>
+  <Card title="Connect more data sources" icon="plug" href="/guides/integrations">
+    Add integrations like Mixpanel, HubSpot, or Salesforce to enrich your analysis.
+  </Card>
+</CardGroup>

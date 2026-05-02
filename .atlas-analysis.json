@@ -1,0 +1,90 @@
+{
+  "projectType": "saas",
+  "projectName": "Getpeeko",
+  "projectDescription": "Getpeeko is an AI-powered platform that helps teams gain deep insights into their users and audience through intelligent analytics and behavioral intelligence.",
+  "theme": "almond",
+  "primaryColor": "#5b6354",
+  "lightColor": "#215333",
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "account-setup"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/overview",
+              "concepts/workspace",
+              "concepts/data-model"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/first-project",
+              "guides/integrations",
+              "guides/sharing-results",
+              "guides/notifications"
+            ]
+          },
+          {
+            "group": "Settings",
+            "pages": [
+              "settings/account",
+              "settings/team",
+              "settings/billing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/rate-limits"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/endpoints/projects",
+              "api-reference/endpoints/insights",
+              "api-reference/endpoints/webhooks"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "AI-powered user insights and behavioral analytics",
+    "Workspace and project management for team collaboration",
+    "Data integrations with popular platforms",
+    "Shareable reports and result exports",
+    "Real-time notifications and alerts",
+    "REST API for programmatic access",
+    "Webhook support for event-driven workflows",
+    "Team management and role-based access"
+  ],
+  "publicApiSurface": [
+    "GET /projects",
+    "POST /projects",
+    "GET /projects/{id}/insights",
+    "POST /webhooks",
+    "GET /webhooks",
+    "DELETE /webhooks/{id}"
+  ]
+}

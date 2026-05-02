@@ -1,0 +1,134 @@
+---
+title: "Authenticate your Getpeeko API requests using API keys"
+description: "Learn how to generate API keys, pass them in the Authorization header, choose the right scope, and handle authentication errors in the Getpeeko API."
+sidebarTitle: "Authentication"
+---
+
+The Getpeeko API uses API keys to authenticate requests. Every API call you make must include your key in the `Authorization` header. Requests without a valid key are rejected with a `401` response. Keep your keys secure — treat them like passwords and never commit them to source control.
+
+## API keys
+
+An API key is a long, randomly generated string that identifies your workspace and grants access according to its assigned scope. Each key is tied to the workspace in which it was created; it cannot be used to access resources in other workspaces. You manage all keys from the **Settings** area of the Getpeeko app at [app.getpeeko.ai](https://app.getpeeko.ai).
+
+## Creating an API key
+
+<Steps>
+  <Step title="Open Settings">
+    In the Getpeeko app, click your workspace avatar and select **Settings**.
+  </Step>
+  <Step title="Go to API Keys">
+    Click **API Keys** in the left-hand navigation.
+  </Step>
+  <Step title="Start key creation">
+    Click **Create API Key**.
+  </Step>
+  <Step title="Name your key">
+    Enter a name that describes how or where you will use this key — for example, `Data warehouse sync` or `Monitoring dashboard`.
+  </Step>
+  <Step title="Select a scope">
+    Choose **Read-only** if the integration only needs to retrieve data, or **Read & write** if it needs to create, update, or delete resources.
+  </Step>
+  <Step title="Create and copy">
+    Click **Create**. Copy the key immediately and store it in a secrets manager or environment variable. Getpeeko will not show it again.
+  </Step>
+</Steps>
+
+## Using your API key
+
+Include your API key as a Bearer token in the `Authorization` header of every request.
+
+<CodeGroup>
+
+```bash curl
+curl https://api.getpeeko.ai/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```javascript javascript
+const res = await fetch('https://api.getpeeko.ai/v1/projects', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+});
+const data = await res.json();
+```
+
+```python python
+import requests
+
+res = requests.get(
+  'https://api.getpeeko.ai/v1/projects',
+  headers={
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+)
+print(res.json())
+```
+
+</CodeGroup>
+
+## API key scopes
+
+When you create an API key you select one of two scopes:
+
+| Scope | Permissions |
+|-------|-------------|
+| `read` | List and retrieve resources (GET requests) |
+| `read_write` | Create, update, and delete resources (GET, POST, PATCH, DELETE requests) |
+
+<Note>
+  For monitoring dashboards, reporting tools, and other read-only integrations, use a `read`-scoped key. This limits the blast radius if the key is ever compromised.
+</Note>
+
+## Revoking an API key
+
+If a key is no longer needed, or if you suspect it has been compromised, revoke it immediately.
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to **Settings** > **API Keys** in the Getpeeko app.
+  </Step>
+  <Step title="Locate the key">
+    Find the key you want to revoke in the list.
+  </Step>
+  <Step title="Revoke">
+    Click **Revoke** next to the key and confirm the action.
+  </Step>
+</Steps>
+
+<Warning>
+  Revoking an API key is immediate and cannot be undone. Any integration using that key will stop working instantly. Create a replacement key before revoking if you need to maintain continuity.
+</Warning>
+
+## Authentication errors
+
+If a request fails authentication or authorization, the API returns one of the following errors:
+
+| Status | Error code | Cause |
+|--------|-----------|-------|
+| `401` | `unauthorized` | The `Authorization` header is missing, malformed, or the token is invalid or revoked |
+| `403` | `forbidden` | The token is valid but the key's scope does not permit this action |
+
+Example `401` response:
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "No valid API key was provided. Include your key in the Authorization header as: Bearer YOUR_API_KEY"
+  }
+}
+```
+
+Example `403` response:
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "Your API key has read-only scope. To perform write operations, create a key with read_write scope."
+  }
+}
+```

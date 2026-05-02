@@ -1,0 +1,251 @@
+---
+title: "Webhooks API: register, list, and delete endpoints"
+description: "Register webhook endpoints to receive real-time Getpeeko events such as analysis completion and new insight creation, and verify payloads with HMAC-SHA256."
+sidebarTitle: "Webhooks"
+---
+
+Webhooks let you receive real-time notifications from Getpeeko without polling the API. When a relevant event occurs — such as an analysis finishing or a new insight being generated — Getpeeko sends an HTTP POST request with a signed JSON payload to your registered endpoint. Use webhooks to trigger automated workflows, sync data to your data warehouse, or notify your team in real time.
+
+## Webhook events
+
+| Event | Description |
+|-------|-------------|
+| `analysis.completed` | Fired when an analysis run finishes, whether it succeeded or encountered an error. The payload includes the final run status and any error details. |
+| `insight.created` | Fired when a new insight is generated from an analysis run. One event is emitted per insight. |
+| `project.created` | Fired when a new project is created in the workspace. |
+
+## Webhook payload structure
+
+Every webhook request Getpeeko sends to your endpoint contains a JSON body with the following top-level fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event` | string | The event name, e.g. `analysis.completed` |
+| `created_at` | string | ISO 8601 timestamp of when the event occurred |
+| `data` | object | Event-specific payload |
+
+Example payload for an `analysis.completed` event:
+
+```json
+{
+  "event": "analysis.completed",
+  "created_at": "2026-04-22T14:30:00Z",
+  "data": {
+    "run_id": "run_pqr012",
+    "project_id": "proj_abc123",
+    "project_name": "Mobile App Users Q1",
+    "status": "succeeded",
+    "insights_generated": 7,
+    "duration_ms": 43210,
+    "completed_at": "2026-04-22T14:30:00Z"
+  }
+}
+```
+
+## Verifying webhook signatures
+
+Getpeeko signs every webhook payload using HMAC-SHA256 and includes the hex-encoded signature in the `Peeko-Signature` request header. Always verify this signature before processing the payload to confirm the request originated from Getpeeko and has not been tampered with.
+
+The signature is computed over the raw JSON request body using the webhook's secret as the key.
+
+<CodeGroup>
+
+```javascript node.js
+const crypto = require('crypto');
+
+function verifyWebhook(req, webhookSecret) {
+  const sig = req.headers['peeko-signature'];
+
+  if (!sig) {
+    throw new Error('Missing Peeko-Signature header');
+  }
+
+  const expected = crypto
+    .createHmac('sha256', webhookSecret)
+    .update(JSON.stringify(req.body))
+    .digest('hex');
+
+  if (sig !== expected) {
+    throw new Error('Invalid signature');
+  }
+
+  return true;
+}
+```
+
+```python python
+import hmac
+import hashlib
+import json
+
+def verify_webhook(request, webhook_secret):
+    sig = request.headers.get('Peeko-Signature')
+
+    if not sig:
+        raise ValueError('Missing Peeko-Signature header')
+
+    expected = hmac.new(
+        webhook_secret.encode(),
+        json.dumps(request.json).encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(sig, expected):
+        raise ValueError('Invalid signature')
+
+    return True
+```
+
+</CodeGroup>
+
+---
+
+## List webhook endpoints
+
+Retrieve all webhook endpoints registered in your workspace.
+
+```
+GET /webhooks
+```
+
+### Response fields
+
+<ResponseField name="data" type="array" required>
+  Array of webhook objects.
+
+  <Expandable title="webhook object fields">
+    <ResponseField name="id" type="string" required>
+      Unique identifier for the webhook, prefixed with `wh_`.
+    </ResponseField>
+    <ResponseField name="url" type="string" required>
+      The destination URL where Getpeeko sends event payloads.
+    </ResponseField>
+    <ResponseField name="events" type="string[]" required>
+      Array of event names this webhook is subscribed to.
+    </ResponseField>
+    <ResponseField name="created_at" type="string" required>
+      ISO 8601 timestamp of when the webhook was registered.
+    </ResponseField>
+    <ResponseField name="active" type="boolean" required>
+      Whether the webhook is currently active. Getpeeko automatically deactivates endpoints that return repeated failures.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+
+```bash curl
+curl https://api.getpeeko.ai/v1/webhooks \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json response
+{
+  "data": [
+    {
+      "id": "wh_def456",
+      "url": "https://hooks.example.com/getpeeko",
+      "events": ["analysis.completed", "insight.created"],
+      "created_at": "2026-03-15T10:00:00Z",
+      "active": true
+    },
+    {
+      "id": "wh_stu321",
+      "url": "https://data-pipeline.example.com/ingest",
+      "events": ["insight.created"],
+      "created_at": "2026-04-01T08:30:00Z",
+      "active": true
+    }
+  ]
+}
+```
+
+</CodeGroup>
+
+---
+
+## Create a webhook endpoint
+
+Register a new URL to receive Getpeeko event payloads.
+
+```
+POST /webhooks
+```
+
+### Body parameters
+
+<ParamField body="url" type="string" required>
+  The HTTPS URL of the endpoint that will receive webhook payloads. Must begin with `https://`.
+</ParamField>
+
+<ParamField body="events" type="string[]" required>
+  Array of event names to subscribe to. At least one event is required. Accepted values: `analysis.completed`, `insight.created`, `project.created`.
+</ParamField>
+
+<ParamField body="secret" type="string">
+  A signing secret used to generate the `Peeko-Signature` header. If you omit this field, Getpeeko generates a random secret for you. The secret is returned in the response and shown only once.
+</ParamField>
+
+### Response
+
+Returns the created webhook object, including the `secret` field.
+
+<Warning>
+  The `secret` is included in the creation response only. Getpeeko does not display it again after this point. Copy it immediately and store it securely — you need it to verify incoming webhook signatures.
+</Warning>
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://api.getpeeko.ai/v1/webhooks \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://hooks.example.com/getpeeko",
+    "events": ["analysis.completed", "insight.created"]
+  }'
+```
+
+```json response
+{
+  "data": {
+    "id": "wh_def456",
+    "url": "https://hooks.example.com/getpeeko",
+    "events": ["analysis.completed", "insight.created"],
+    "secret": "whsec_a8f3c2e91b04d7a65f0e8c3b21d9f74e",
+    "created_at": "2026-05-01T08:00:00Z",
+    "active": true
+  }
+}
+```
+
+</CodeGroup>
+
+---
+
+## Delete a webhook endpoint
+
+Remove a registered webhook endpoint. Getpeeko immediately stops sending events to this URL.
+
+```
+DELETE /webhooks/{id}
+```
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the webhook to delete (e.g., `wh_def456`).
+</ParamField>
+
+### Response
+
+Returns `204 No Content` on success. No response body is included.
+
+<CodeGroup>
+
+```bash curl
+curl -X DELETE https://api.getpeeko.ai/v1/webhooks/wh_def456 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+</CodeGroup>

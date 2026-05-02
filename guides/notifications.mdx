@@ -1,0 +1,85 @@
+---
+title: "Set up email and Slack alerts and notifications in Getpeeko"
+description: "Configure email alerts, Slack notifications, and per-project notification settings to stay informed when analyses complete and new insights are detected."
+sidebarTitle: "Notifications"
+---
+
+Getpeeko's notification system keeps you and your team informed without requiring you to check the dashboard constantly. You can receive alerts when an analysis run finishes, when the AI engine detects a high-confidence insight, and through scheduled digests that summarize activity across your workspace. Notifications can be delivered by email, Slack, or both — and you can fine-tune them at both the workspace and individual project level.
+
+## Notification types
+
+Getpeeko supports four categories of notifications:
+
+- **Analysis complete** — Sent when an analysis run transitions to **Complete** or **Failed**. This lets you review results the moment they're ready, or investigate an error without having to poll the project status manually.
+- **New insight alert** — Triggered when the AI engine detects a high-confidence insight (confidence score 80 or above) in a completed run. Use this to catch critical findings immediately, before reviewing the full insights panel.
+- **Weekly digest** — A scheduled summary sent every Monday morning that covers analysis activity, new insights, and workspace changes from the past seven days. Useful for staying up to date without monitoring in real time.
+- **Workspace activity** — Covers administrative events in your workspace: a new member accepting an invitation, an integration being connected or disconnected, and billing changes. Workspace owners and admins receive these by default.
+
+## Configuring email notifications
+
+You can enable or disable each notification type independently in your account settings.
+
+<Steps>
+  <Step title="Open your account notification settings">
+    Click your avatar in the bottom-left corner of the dashboard, then select **Account Settings**. In the left navigation, click **Notifications**.
+  </Step>
+
+  <Step title="Review the notification toggles">
+    You'll see a toggle for each notification type: **Analysis complete**, **New insight alert**, **Weekly digest**, and **Workspace activity**. Each toggle is independent — turning one off does not affect the others.
+  </Step>
+
+  <Step title="Enable or disable each type">
+    Click a toggle to turn a notification type on or off. Changes save automatically — there's no separate save button. Toggling a notification off immediately stops that type of email from being sent to your account.
+  </Step>
+
+  <Step title="Verify your notification email">
+    Notifications are sent to the email address associated with your Getpeeko account. If you want to receive notifications at a different address, update your email under **Account Settings > Profile** first.
+  </Step>
+</Steps>
+
+## Slack integration
+
+Getpeeko can send notifications directly to Slack channels, giving your team real-time alerts where the conversation already happens.
+
+<Steps>
+  <Step title="Open Integrations settings">
+    Go to **Settings > Integrations** and click **Add Integration**.
+  </Step>
+
+  <Step title="Select Slack">
+    Find **Slack** in the integration list and click it to begin the authorization flow.
+  </Step>
+
+  <Step title="Authorize the Getpeeko Slack app">
+    Click **Authorize with Slack**. A Slack OAuth consent screen will open. Select the Slack workspace you want to connect, review the permissions, and click **Allow**. Getpeeko requests permission to post messages to channels you select — it does not read any existing Slack messages.
+  </Step>
+
+  <Step title="Choose a default channel for workspace notifications">
+    After authorization, select a default Slack channel for workspace-level notifications (analysis complete, workspace activity, weekly digest). This channel will receive notifications from all projects unless you configure per-project overrides.
+  </Step>
+
+  <Step title="Configure per-project channels (optional)">
+    To route a specific project's notifications to a different Slack channel, open that project and go to **Settings > Notifications**. Under **Slack channel**, select the channel you want to use for that project. This overrides the workspace default for that project only.
+  </Step>
+</Steps>
+
+<Tip>
+  Use Slack for analysis complete and new insight alert notifications so your team can react in real time. Reserve the weekly digest for email so it doesn't get lost in a busy channel.
+</Tip>
+
+## Project-level notification settings
+
+Each project has its own notification settings that let you control what gets sent and to where, independent of your workspace defaults.
+
+To access project notification settings, open the project and go to **Settings > Notifications**. From here you can configure:
+
+- **Analysis complete** — Enable or disable notifications for this specific project's runs. Useful if you have low-priority projects that you don't need immediate alerts for.
+- **Insight threshold alerts** — Set a minimum confidence score for insight alerts on this project. For example, setting the threshold to 90 means you'll only be notified about extremely high-confidence findings, reducing noise for exploratory projects.
+- **Slack channel override** — Specify a project-specific Slack channel, as described in the Slack integration steps above.
+- **Additional recipients** — Add other email addresses (such as a team distribution list) that should receive notifications for this project, even if those recipients don't have Getpeeko accounts.
+
+Project-level settings always take precedence over workspace defaults. If you disable a notification type at the project level, it will not be sent for that project regardless of your workspace or account settings.
+
+<Note>
+  To prevent notification fatigue, Getpeeko applies frequency limits to some notification types. New insight alerts are capped at a maximum of five alerts per project per hour, even if multiple high-confidence insights are detected in rapid succession. If more than five qualifying insights are found in an hour, the remaining ones are batched into a single summary notification.
+</Note>

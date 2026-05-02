@@ -1,0 +1,61 @@
+---
+title: "How Getpeeko works: workspaces, projects, and insights"
+description: "A guide to Getpeeko's key concepts — workspaces, projects, analysis runs, insights, data sources, and reports — and how they fit together."
+sidebarTitle: "Overview"
+---
+
+Getpeeko organizes your work around a clear hierarchy: everything lives inside a **workspace**, which contains one or more **projects**. Each project runs the AI engine against your connected data, producing **analysis runs** that generate individual **insights**. Understanding this structure helps you navigate the platform and get results faster.
+
+## The Getpeeko hierarchy
+
+- **Workspace**
+  - **Projects**
+    - **Analysis runs**
+      - **Insights**
+
+<Note>
+  Billing is tied to your workspace. Your plan determines how many projects you can create, how many members you can invite, and how many analysis runs you can execute per month. Visit **Settings → Billing** to review your current plan and usage.
+</Note>
+
+## Core concepts
+
+### Workspace
+
+A workspace is the top-level environment for your team. It contains all your projects, members, and integrations, and has its own settings, billing, and access controls. Every Getpeeko account belongs to at least one workspace. If you work across multiple clients or business units, you can create separate workspaces to keep data and access fully isolated.
+
+### Project
+
+A project is the primary unit of analysis in Getpeeko. Each project defines a scope — a specific audience segment, product area, or data source — and holds a history of analysis runs, insights, and reports. You configure a project's connected data sources and settings once, then run the AI engine as often as you need.
+
+### Analysis run
+
+An analysis run is a single execution of Getpeeko's AI engine against a project's data. When you trigger a run, the engine processes your connected data sources and produces a batch of insights. Each run records its start time, duration, status, and the number of insights generated. Runs move through the states `pending → running → complete` (or `failed` if an error occurs).
+
+### Insight
+
+An insight is an individual AI-generated finding. Insights surface specific, actionable patterns in your audience data — for example, "Users who complete onboarding are 3× more likely to convert within 30 days." Each insight includes a title, a plain-language finding, a confidence score, supporting data, and tags to help you filter and organize results.
+
+### Data source
+
+A data source is a connected integration that feeds data into your projects. Getpeeko supports analytics platforms, CRM systems, product databases, and file uploads. You connect data sources at the workspace level and attach them to individual projects. The quality and breadth of your connected data directly influences the depth of the insights Getpeeko can generate.
+
+### Report
+
+A report is a shareable collection of insights exported from a project. Reports are snapshots — they capture the state of selected insights at a specific point in time. You can share reports with stakeholders outside your workspace via a link, or export them as a PDF or CSV file.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Workspaces" icon="building" href="/concepts/workspace">
+    Learn how to create workspaces, manage members, and configure roles.
+  </Card>
+  <Card title="Data model" icon="database" href="/concepts/data-model">
+    Explore projects, runs, insights, and how data flows through Getpeeko.
+  </Card>
+  <Card title="Create your first project" icon="folder-plus" href="/guides/first-project">
+    A step-by-step walkthrough for setting up and running your first analysis.
+  </Card>
+  <Card title="Connect integrations" icon="plug" href="/guides/integrations">
+    Connect analytics platforms, CRM systems, and other data sources.
+  </Card>
+</CardGroup>
