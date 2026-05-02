@@ -1,28 +1,13 @@
-# Mintlify Starter Kit
+# Peeko Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+This repository powers the public Peeko documentation site at `https://docs.getpeeko.ai`.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+The current documentation focuses on the Peeko MCP developer platform:
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
-
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
-
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
-
-```bash
-npx skills add https://mintlify.com/docs
-```
-
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
-
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+- Native browser OAuth setup for Cursor and remote MCP clients.
+- MCP tool schemas and response examples.
+- Credit pricing, billing behavior, rate limits, and errors.
+- Internal RAG search vs hybrid live search behavior.
 
 ## Development
 
@@ -40,9 +25,15 @@ mint dev
 
 View your local preview at `http://localhost:3000`.
 
+Check links before publishing:
+
+```
+mint broken-links
+```
+
 ## Publishing changes
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+The Mintlify GitHub app deploys changes from the default branch.
 
 ## Need help?
 

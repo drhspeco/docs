@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Getpeeko",
+  "name": "Peeko Docs",
   "theme": "almond",
   "favicon": "https://media.brand.dev/b7eecca6-40ef-4d9e-b4cb-43dcd3574be6.png",
   "colors": {
@@ -26,57 +26,17 @@
         "tab": "Docs",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Peeko MCP",
             "pages": [
               "introduction",
-              "quickstart",
-              "account-setup"
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "concepts/overview",
-              "concepts/workspace",
-              "concepts/data-model"
-            ]
-          },
-          {
-            "group": "Guides",
-            "pages": [
-              "guides/first-project",
-              "guides/integrations",
-              "guides/sharing-results",
-              "guides/notifications"
-            ]
-          },
-          {
-            "group": "Settings",
-            "pages": [
-              "settings/account",
-              "settings/team",
-              "settings/billing"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API",
-            "pages": [
-              "api-reference/introduction",
-              "api-reference/authentication",
-              "api-reference/rate-limits"
-            ]
-          },
-          {
-            "group": "Endpoints",
-            "pages": [
-              "api-reference/endpoints/projects",
-              "api-reference/endpoints/insights",
-              "api-reference/endpoints/webhooks"
+              "mcp/developer-quickstart",
+              "mcp/authentication",
+              "mcp/tools",
+              "mcp/billing",
+              "mcp/rate-limits-and-errors",
+              "mcp/response-schemas",
+              "mcp/rag-vs-live-search",
+              "mcp/changelog"
             ]
           }
         ]

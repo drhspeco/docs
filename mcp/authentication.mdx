@@ -1,0 +1,105 @@
+---
+title: "Authentication"
+description: "How Peeko MCP clients authorize with native browser OAuth and PKCE."
+---
+
+Peeko MCP uses native browser OAuth for remote MCP clients. Developers do not need to create, copy, or manage API keys.
+
+## Discovery
+
+MCP clients discover the protected resource metadata at:
+
+```text
+https://api.getpeeko.ai/.well-known/oauth-protected-resource
+```
+
+Example response:
+
+```json
+{
+  "resource": "https://api.getpeeko.ai/api/v1/mcp/server",
+  "authorization_servers": ["https://api.getpeeko.ai"],
+  "bearer_methods_supported": ["header"],
+  "scopes_supported": ["mcp"]
+}
+```
+
+Clients then discover the authorization server metadata at:
+
+```text
+https://api.getpeeko.ai/.well-known/oauth-authorization-server
+```
+
+Example response:
+
+```json
+{
+  "issuer": "https://api.getpeeko.ai",
+  "authorization_endpoint": "https://api.getpeeko.ai/api/v1/mcp/oauth/authorize",
+  "token_endpoint": "https://api.getpeeko.ai/api/v1/mcp/oauth/token",
+  "registration_endpoint": "https://api.getpeeko.ai/api/v1/mcp/oauth/register",
+  "scopes_supported": ["mcp"],
+  "response_types_supported": ["code"],
+  "grant_types_supported": ["authorization_code"],
+  "code_challenge_methods_supported": ["S256"],
+  "token_endpoint_auth_methods_supported": ["none"]
+}
+```
+
+## Flow
+
+1. The client dynamically registers itself with Peeko.
+2. The client starts an authorization-code flow with PKCE.
+3. Peeko redirects the browser to the MCP consent page.
+4. The user signs in, reviews the client request, and approves access.
+5. Peeko redirects back to the client with an authorization code.
+6. The client exchanges the code and PKCE verifier for an access token.
+7. The client calls `https://api.getpeeko.ai/api/v1/mcp/server` with a bearer token.
+
+The browser consent page is hosted by Peeko and shows the client name, redirect URI, requested `mcp` scope, signed-in user, and expiration time.
+
+## Dynamic client registration
+
+Clients may register with:
+
+```json
+{
+  "client_name": "Cursor",
+  "redirect_uris": ["cursor://oauth/callback"],
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none",
+  "scope": "mcp"
+}
+```
+
+Example response:
+
+```json
+{
+  "client_id": "client_01HXAMPLE000000000000000",
+  "client_name": "Cursor",
+  "redirect_uris": ["cursor://oauth/callback"],
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none",
+  "scope": "mcp"
+}
+```
+
+## Token response
+
+The token endpoint returns a bearer token to the client. Docs must never include real access tokens; this example is intentionally redacted:
+
+```json
+{
+  "access_token": "<redacted-oauth-access-token>",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "mcp"
+}
+```
+
+## Revoking access
+
+OAuth-issued credentials are represented in the MCP console so users can revoke client access from **MCP -> API Keys**. Revoking access prevents future MCP tool calls from that client.
