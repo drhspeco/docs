@@ -31,6 +31,16 @@ Check links before publishing:
 mint broken-links
 ```
 
+Regenerate the MCP API reference from the backend:
+
+```
+cd ../peeko-backend
+poetry run python scripts/export_mcp_openapi.py
+```
+
+The export uses a filtered drf-spectacular schema and writes to
+`peeko-docs/api-reference/openapi.json`.
+
 ## Publishing changes
 
 The Mintlify GitHub app deploys changes from the default branch.

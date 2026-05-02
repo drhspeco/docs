@@ -1,217 +1,823 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Peeko MCP API",
+        "version": "0.1",
+        "description": "Public API surface for Peeko Material Search MCP. Use a Peeko MCP bearer token to call JSON-RPC tools, search materials, and retrieve product data."
     },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
-  "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+    "paths": {
+        "/api/v1/mcp/api-keys": {
+            "get": {
+                "operationId": "api_keys_list",
+                "tags": [
+                    "MCP - API Keys"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/McpApiKey"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "api_keys_create",
+                "tags": [
+                    "MCP - API Keys"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMcpApiKeyRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMcpApiKeyRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMcpApiKeyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpApiKey"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
+        "/api/v1/mcp/api-keys/{id}/revoke": {
+            "post": {
+                "operationId": "api_keys_revoke_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "MCP - API Keys"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpApiKeyRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpApiKeyRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpApiKeyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpApiKey"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          }
         },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
+        "/api/v1/mcp/billing/cancel": {
+            "post": {
+                "operationId": "billing_cancel_create",
+                "tags": [
+                    "MCP - Billing"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
+        },
+        "/api/v1/mcp/billing/checkout": {
+            "post": {
+                "operationId": "billing_checkout_create",
+                "tags": [
+                    "MCP - Billing"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpCheckoutRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpCheckoutRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpCheckoutRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/billing/subscription": {
+            "get": {
+                "operationId": "billing_subscription_retrieve",
+                "tags": [
+                    "MCP - Billing"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/health": {
+            "get": {
+                "operationId": "health_retrieve",
+                "tags": [
+                    "health"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/mcp/products/{product_id}": {
+            "get": {
+                "operationId": "products_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "MCP - Search"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/products/alternatives": {
+            "post": {
+                "operationId": "products_alternatives_create",
+                "tags": [
+                    "MCP - Search"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AlternativesRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AlternativesRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AlternativesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/products/compare": {
+            "post": {
+                "operationId": "products_compare_create",
+                "tags": [
+                    "MCP - Search"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompareRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompareRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompareRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/search/materials": {
+            "post": {
+                "operationId": "search_materials_create",
+                "tags": [
+                    "MCP - Search"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpSearchRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpSearchRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpSearchRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/server": {
+            "get": {
+                "operationId": "server_retrieve",
+                "description": "MCP Streamable HTTP transport endpoint.\n\nImplements the subset Cursor uses: single-shot POST returning JSON,\noptional `Mcp-Session-Id` echo, and 405 for GET/DELETE so clients fall\nback to non-streaming mode without retrying.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "event-stream",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "MCP - Server"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "server_create",
+                "description": "MCP Streamable HTTP transport endpoint.\n\nImplements the subset Cursor uses: single-shot POST returning JSON,\noptional `Mcp-Session-Id` echo, and 405 for GET/DELETE so clients fall\nback to non-streaming mode without retrying.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "event-stream",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "MCP - Server"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "server_destroy",
+                "description": "MCP Streamable HTTP transport endpoint.\n\nImplements the subset Cursor uses: single-shot POST returning JSON,\noptional `Mcp-Session-Id` echo, and 405 for GET/DELETE so clients fall\nback to non-streaming mode without retrying.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "event-stream",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "MCP - Server"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/server/execute": {
+            "post": {
+                "operationId": "server_execute_create",
+                "tags": [
+                    "MCP - Server"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/server/tools": {
+            "get": {
+                "operationId": "server_tools_retrieve",
+                "tags": [
+                    "MCP - Server"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/usage/summary": {
+            "get": {
+                "operationId": "usage_summary_retrieve",
+                "tags": [
+                    "MCP - Usage"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mcp/whoami": {
+            "get": {
+                "operationId": "whoami_retrieve",
+                "tags": [
+                    "MCP - Server"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
-      }
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
+    "components": {
+        "schemas": {
+            "AlternativesRequest": {
+                "type": "object",
+                "properties": {
+                    "product_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "query": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "maximum": 20,
+                        "minimum": 1,
+                        "default": 5
+                    }
+                }
+            },
+            "CompareRequest": {
+                "type": "object",
+                "properties": {
+                    "product_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "maxItems": 5,
+                        "minItems": 2
+                    }
+                },
+                "required": [
+                    "product_ids"
+                ]
+            },
+            "CreateMcpApiKeyRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "rate_limit_per_minute": {
+                        "type": "integer",
+                        "maximum": 10000,
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "McpApiKey": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "maxLength": 40
+                    },
+                    "last_four": {
+                        "type": "string",
+                        "maxLength": 8
+                    },
+                    "status": {
+                        "enum": [
+                            "active",
+                            "revoked"
+                        ],
+                        "type": "string",
+                        "description": "* `active` - Active\n* `revoked` - Revoked",
+                        "x-spec-enum-id": "37f156c83b1a8478"
+                    },
+                    "rate_limit_per_minute": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "revoked_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "metadata": {},
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "id",
+                    "last_four",
+                    "name",
+                    "prefix",
+                    "updated_at"
+                ]
+            },
+            "McpApiKeyRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    },
+                    "last_four": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8
+                    },
+                    "status": {
+                        "enum": [
+                            "active",
+                            "revoked"
+                        ],
+                        "type": "string",
+                        "description": "* `active` - Active\n* `revoked` - Revoked",
+                        "x-spec-enum-id": "37f156c83b1a8478"
+                    },
+                    "rate_limit_per_minute": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "revoked_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "metadata": {}
+                },
+                "required": [
+                    "last_four",
+                    "name",
+                    "prefix"
+                ]
+            },
+            "McpCheckoutRequest": {
+                "type": "object",
+                "properties": {
+                    "pack_key": {
+                        "enum": [
+                            "test",
+                            "starter",
+                            "growth",
+                            "scale"
+                        ],
+                        "type": "string",
+                        "description": "* `test` - test\n* `starter` - starter\n* `growth` - growth\n* `scale` - scale",
+                        "x-spec-enum-id": "e6faacedbd5be675",
+                        "default": "starter"
+                    },
+                    "success_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "minLength": 1
+                    },
+                    "cancel_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "minLength": 1
+                    }
+                }
+            },
+            "McpSearchRequest": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "maximum": 20,
+                        "minimum": 1,
+                        "default": 10
+                    },
+                    "live_search": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "filters": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "project_context": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    }
+                },
+                "required": [
+                    "query"
+                ]
+            },
+            "McpToolExecuteRequest": {
+                "type": "object",
+                "properties": {
+                    "tool": {
+                        "enum": [
+                            "search_materials",
+                            "get_product",
+                            "find_alternatives",
+                            "compare_products"
+                        ],
+                        "type": "string",
+                        "description": "* `search_materials` - search_materials\n* `get_product` - get_product\n* `find_alternatives` - find_alternatives\n* `compare_products` - compare_products",
+                        "x-spec-enum-id": "62a59e9eedf3d5ee"
+                    },
+                    "arguments": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    }
+                },
+                "required": [
+                    "tool"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "Use your Peeko MCP API key or OAuth-issued bearer token."
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.getpeeko.ai"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
 }

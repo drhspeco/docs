@@ -40,8 +40,32 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "MCP REST API",
+            "openapi": "api-reference/openapi.json"
+          }
+        ]
       }
     ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "typescript"
+      ],
+      "defaults": "required",
+      "prefill": true
+    }
   },
   "footer": {
     "socials": {}
