@@ -17,7 +17,9 @@
                             "type": "string",
                             "format": "uuid"
                         },
-                        "required": true
+                        "required": true,
+                        "description": "Product ID copied from `results[].id` in search_materials.",
+                        "example": "3c90c3cc-0d44-4b50-8888-ddd25736052a"
                     }
                 ],
                 "tags": [
@@ -25,14 +27,43 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "data": {
+                                        "id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                        "title": "City District Emerald Matte 2x10",
+                                        "url": "https://example.com/products/city-district-emerald",
+                                        "description": "A bright emerald ceramic subway tile suitable for interior walls.",
+                                        "manufacturer": "Iris Ceramica",
+                                        "image_urls": [
+                                            "https://example.com/images/city-district-emerald.jpg"
+                                        ],
+                                        "pricing": [],
+                                        "specifications": []
+                                    },
+                                    "errors": [],
+                                    "meta": {
+                                        "version": "0.1.0",
+                                        "app_name": "Peeko MCP"
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Get product details",
+                "description": "Retrieve full details for one Peeko product. Get the `product_id` from `results[].id` in a `search_materials` response."
             }
         },
         "/api/v1/mcp/products/alternatives": {
@@ -46,30 +77,106 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/AlternativesRequest"
+                            },
+                            "examples": {
+                                "Query-only alternatives": {
+                                    "summary": "No product ID needed",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5
+                                    }
+                                },
+                                "Alternatives to a search result": {
+                                    "summary": "Use a product ID returned by search",
+                                    "value": {
+                                        "product_id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                        "limit": 5
+                                    }
+                                }
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "$ref": "#/components/schemas/AlternativesRequest"
+                            },
+                            "examples": {
+                                "Query-only alternatives": {
+                                    "summary": "No product ID needed",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5
+                                    }
+                                },
+                                "Alternatives to a search result": {
+                                    "summary": "Use a product ID returned by search",
+                                    "value": {
+                                        "product_id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                        "limit": 5
+                                    }
+                                }
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/AlternativesRequest"
+                            },
+                            "examples": {
+                                "Query-only alternatives": {
+                                    "summary": "No product ID needed",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5
+                                    }
+                                },
+                                "Alternatives to a search result": {
+                                    "summary": "Use a product ID returned by search",
+                                    "value": {
+                                        "product_id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                        "limit": 5
+                                    }
+                                }
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "query": "brighter version of emerald subway tile",
+                                    "results": [
+                                        {
+                                            "id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                            "title": "City District Emerald Matte 2x10",
+                                            "manufacturer": "Iris Ceramica",
+                                            "url": "https://example.com/products/city-district-emerald",
+                                            "text": "A bright emerald ceramic subway tile suitable for interior walls.",
+                                            "image_urls": [
+                                                "https://example.com/images/city-district-emerald.jpg"
+                                            ]
+                                        }
+                                    ],
+                                    "metadata": {
+                                        "results_count": 1
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Find alternative products",
+                "description": "Find alternatives using either a natural-language `query` or a `product_id` from a previous search. For playground use, the easiest path is to enter only `query` and `limit`."
             }
         },
         "/api/v1/mcp/products/compare": {
@@ -83,16 +190,49 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/CompareRequest"
+                            },
+                            "examples": {
+                                "Compare two search results": {
+                                    "summary": "Use IDs returned by search",
+                                    "value": {
+                                        "product_ids": [
+                                            "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                            "4c90c3cc-0d44-4b50-8888-ddd25736052b"
+                                        ]
+                                    }
+                                }
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "$ref": "#/components/schemas/CompareRequest"
+                            },
+                            "examples": {
+                                "Compare two search results": {
+                                    "summary": "Use IDs returned by search",
+                                    "value": {
+                                        "product_ids": [
+                                            "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                            "4c90c3cc-0d44-4b50-8888-ddd25736052b"
+                                        ]
+                                    }
+                                }
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/CompareRequest"
+                            },
+                            "examples": {
+                                "Compare two search results": {
+                                    "summary": "Use IDs returned by search",
+                                    "value": {
+                                        "product_ids": [
+                                            "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                            "4c90c3cc-0d44-4b50-8888-ddd25736052b"
+                                        ]
+                                    }
+                                }
                             }
                         }
                     },
@@ -100,14 +240,46 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "data": {
+                                        "products": [
+                                            {
+                                                "product_id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                                "title": "City District Emerald Matte 2x10",
+                                                "url": "https://example.com/products/city-district-emerald",
+                                                "manufacturer": "Iris Ceramica",
+                                                "image_urls": [
+                                                    "https://example.com/images/city-district-emerald.jpg"
+                                                ],
+                                                "availability_status": "available",
+                                                "spec_count": 8
+                                            }
+                                        ]
+                                    },
+                                    "errors": [],
+                                    "meta": {
+                                        "version": "0.1.0",
+                                        "app_name": "Peeko MCP"
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Compare products by ID",
+                "description": "Compare two to five products. Product IDs come from `results[].id` in `search_materials`; search first, copy the IDs you want to compare, then call this endpoint."
             }
         },
         "/api/v1/mcp/search/materials": {
@@ -121,16 +293,70 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpSearchRequest"
+                            },
+                            "examples": {
+                                "Basic material search": {
+                                    "summary": "Search by product need",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5,
+                                        "live_search": false
+                                    }
+                                },
+                                "Live web search": {
+                                    "summary": "Broader live discovery",
+                                    "value": {
+                                        "query": "bio-based resilient flooring for healthcare corridors",
+                                        "limit": 5,
+                                        "live_search": true
+                                    }
+                                }
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpSearchRequest"
+                            },
+                            "examples": {
+                                "Basic material search": {
+                                    "summary": "Search by product need",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5,
+                                        "live_search": false
+                                    }
+                                },
+                                "Live web search": {
+                                    "summary": "Broader live discovery",
+                                    "value": {
+                                        "query": "bio-based resilient flooring for healthcare corridors",
+                                        "limit": 5,
+                                        "live_search": true
+                                    }
+                                }
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpSearchRequest"
+                            },
+                            "examples": {
+                                "Basic material search": {
+                                    "summary": "Search by product need",
+                                    "value": {
+                                        "query": "brighter version of emerald subway tile",
+                                        "limit": 5,
+                                        "live_search": false
+                                    }
+                                },
+                                "Live web search": {
+                                    "summary": "Broader live discovery",
+                                    "value": {
+                                        "query": "bio-based resilient flooring for healthcare corridors",
+                                        "limit": 5,
+                                        "live_search": true
+                                    }
+                                }
                             }
                         }
                     },
@@ -138,20 +364,48 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "query": "brighter version of emerald subway tile",
+                                    "results": [
+                                        {
+                                            "id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                                            "title": "City District Emerald Matte 2x10",
+                                            "manufacturer": "Iris Ceramica",
+                                            "url": "https://example.com/products/city-district-emerald",
+                                            "text": "A bright emerald ceramic subway tile suitable for interior walls.",
+                                            "image_urls": [
+                                                "https://example.com/images/city-district-emerald.jpg"
+                                            ]
+                                        }
+                                    ],
+                                    "metadata": {
+                                        "results_count": 1
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Search materials by natural language",
+                "description": "Start here. Enter a natural-language material or product query and Peeko returns matching products. Use `results[].id` from this response as the `product_id` for product detail, alternatives, or compare requests."
             }
         },
         "/api/v1/mcp/server": {
             "post": {
                 "operationId": "server_create",
-                "description": "MCP Streamable HTTP transport endpoint.\n\nImplements the subset Cursor uses: single-shot POST returning JSON,\noptional `Mcp-Session-Id` echo, and 405 for GET/DELETE so clients fall\nback to non-streaming mode without retrying.",
+                "description": "Transport endpoint used by Cursor and other MCP clients. Most developers should connect their MCP client to this URL rather than call it directly. To test search in the playground, use `POST /api/v1/mcp/search/materials`.",
                 "parameters": [
                     {
                         "in": "query",
@@ -177,7 +431,8 @@
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "MCP JSON-RPC endpoint"
             }
         },
         "/api/v1/mcp/server/execute": {
@@ -191,16 +446,55 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            },
+                            "examples": {
+                                "Execute search_materials": {
+                                    "summary": "Run a search tool call",
+                                    "value": {
+                                        "tool": "search_materials",
+                                        "arguments": {
+                                            "query": "exterior porcelain tile DCOF 0.42",
+                                            "limit": 3,
+                                            "live_search": false
+                                        }
+                                    }
+                                }
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            },
+                            "examples": {
+                                "Execute search_materials": {
+                                    "summary": "Run a search tool call",
+                                    "value": {
+                                        "tool": "search_materials",
+                                        "arguments": {
+                                            "query": "exterior porcelain tile DCOF 0.42",
+                                            "limit": 3,
+                                            "live_search": false
+                                        }
+                                    }
+                                }
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/McpToolExecuteRequest"
+                            },
+                            "examples": {
+                                "Execute search_materials": {
+                                    "summary": "Run a search tool call",
+                                    "value": {
+                                        "tool": "search_materials",
+                                        "arguments": {
+                                            "query": "exterior porcelain tile DCOF 0.42",
+                                            "limit": 3,
+                                            "live_search": false
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
@@ -215,7 +509,9 @@
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Execute a Peeko MCP tool",
+                "description": "Convenience endpoint for calling a Peeko MCP tool by name. Use `search_materials` first if you need product IDs for `get_product` or `compare_products`."
             }
         },
         "/api/v1/mcp/server/tools": {
@@ -226,14 +522,51 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "data": {
+                                        "tools": [
+                                            {
+                                                "name": "search_materials",
+                                                "description": "Search construction materials and products"
+                                            },
+                                            {
+                                                "name": "get_product",
+                                                "description": "Get full details for a product"
+                                            },
+                                            {
+                                                "name": "find_alternatives",
+                                                "description": "Find alternatives"
+                                            },
+                                            {
+                                                "name": "compare_products",
+                                                "description": "Compare products"
+                                            }
+                                        ]
+                                    },
+                                    "errors": [],
+                                    "meta": {
+                                        "version": "0.1.0",
+                                        "app_name": "Peeko MCP"
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "List available MCP tools",
+                "description": "Returns the Peeko MCP tools available to this API key."
             }
         },
         "/api/v1/mcp/whoami": {
@@ -244,14 +577,37 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "success": true,
+                                    "data": {
+                                        "user_id": 123,
+                                        "api_key_prefix": "pk_mcp_live",
+                                        "subscription_status": "active",
+                                        "credit_balance": 10
+                                    },
+                                    "errors": [],
+                                    "meta": {
+                                        "version": "0.1.0",
+                                        "app_name": "Peeko MCP"
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "bearerAuth": []
                     }
-                ]
+                ],
+                "summary": "Check the current MCP API key",
+                "description": "Use this lightweight endpoint to verify that your bearer token works."
             }
         }
     },
@@ -262,10 +618,14 @@
                 "properties": {
                     "product_id": {
                         "type": "string",
-                        "format": "uuid"
+                        "format": "uuid",
+                        "description": "Optional. Copy this from `results[].id` in a search_materials response.",
+                        "example": "3c90c3cc-0d44-4b50-8888-ddd25736052a"
                     },
                     "query": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Recommended in the playground. Use a natural-language alternatives query.",
+                        "example": "brighter version of emerald subway tile"
                     },
                     "limit": {
                         "type": "integer",
@@ -273,7 +633,8 @@
                         "minimum": 1,
                         "default": 5
                     }
-                }
+                },
+                "description": "Find alternatives by query or by a product ID returned from search_materials."
             },
             "CompareRequest": {
                 "type": "object",
@@ -285,12 +646,18 @@
                             "format": "uuid"
                         },
                         "maxItems": 5,
-                        "minItems": 2
+                        "minItems": 2,
+                        "description": "Two to five product IDs copied from `results[].id` in search_materials.",
+                        "example": [
+                            "3c90c3cc-0d44-4b50-8888-ddd25736052a",
+                            "4c90c3cc-0d44-4b50-8888-ddd25736052b"
+                        ]
                     }
                 },
                 "required": [
                     "product_ids"
-                ]
+                ],
+                "description": "Compare products returned by a previous material search."
             },
             "McpSearchRequest": {
                 "type": "object",
@@ -298,17 +665,23 @@
                     "query": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 5000
+                        "maxLength": 5000,
+                        "description": "Describe what you want to find.",
+                        "example": "brighter version of emerald subway tile"
                     },
                     "limit": {
                         "type": "integer",
                         "maximum": 20,
                         "minimum": 1,
-                        "default": 10
+                        "default": 10,
+                        "description": "Maximum number of results to return.",
+                        "example": 5
                     },
                     "live_search": {
                         "type": "boolean",
-                        "default": false
+                        "default": false,
+                        "description": "Set true to include live web discovery. Live search costs more credits.",
+                        "example": false
                     },
                     "filters": {
                         "type": "object",
@@ -321,7 +694,8 @@
                 },
                 "required": [
                     "query"
-                ]
+                ],
+                "description": "Natural-language material search request."
             },
             "McpToolExecuteRequest": {
                 "type": "object",
@@ -334,17 +708,24 @@
                             "compare_products"
                         ],
                         "type": "string",
-                        "description": "* `search_materials` - search_materials\n* `get_product` - get_product\n* `find_alternatives` - find_alternatives\n* `compare_products` - compare_products",
+                        "description": "Tool to execute. Start with `search_materials` for discovery.",
                         "x-spec-enum-id": "62a59e9eedf3d5ee"
                     },
                     "arguments": {
                         "type": "object",
-                        "additionalProperties": {}
+                        "additionalProperties": {},
+                        "description": "JSON arguments for the selected MCP tool.",
+                        "example": {
+                            "query": "exterior porcelain tile DCOF 0.42",
+                            "limit": 3,
+                            "live_search": false
+                        }
                     }
                 },
                 "required": [
                     "tool"
-                ]
+                ],
+                "description": "Call a Peeko MCP tool by name with JSON arguments."
             }
         },
         "securitySchemes": {
@@ -363,6 +744,16 @@
     "security": [
         {
             "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "MCP - Search",
+            "description": "Human-friendly search and product workflows. Start with `search_materials` to discover product IDs."
+        },
+        {
+            "name": "MCP - Server",
+            "description": "MCP protocol endpoints for Cursor and other MCP-compatible clients."
         }
     ]
 }
