@@ -1,0 +1,91 @@
+---
+title: "Rate Limits and Errors"
+description: "Common Peeko MCP authentication, billing, validation, and lookup errors."
+---
+
+Peeko MCP applies usage limits at two levels:
+
+- Credit balance: billable tool calls consume credits from the user's MCP subscription.
+- Request rate: OAuth-issued credentials inherit the MCP per-minute rate limit. The default configured limit is `60` requests per minute unless changed by deployment configuration.
+
+## Common errors
+
+### Authentication required
+
+The client must complete browser OAuth before calling the MCP server.
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+Action: reconnect the MCP server in Cursor and complete the browser approval flow.
+
+### Invalid or expired authorization request
+
+The browser consent page uses a short-lived one-time token.
+
+```json
+{
+  "error": "invalid_request",
+  "error_description": "OTT expired or not found"
+}
+```
+
+Action: restart the connection from the MCP client.
+
+### Credit balance exceeded
+
+The user does not have enough credits for the requested tool call.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "error": {
+    "code": -32603,
+    "message": "MCP credit balance exceeded"
+  }
+}
+```
+
+Action: buy credits in the MCP console.
+
+### Invalid tool arguments
+
+Tool arguments failed validation or omitted a required value.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "error": {
+    "code": -32603,
+    "message": "query is required"
+  }
+}
+```
+
+Action: call the tool again with the required fields from `tools/list`.
+
+### Product not found
+
+`get_product` did not find the requested product ID.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "error": {
+    "code": -32603,
+    "message": "Product not found"
+  }
+}
+```
+
+Action: use `search_materials` first, then pass a returned `product_id` to `get_product`.
+
+## Empty results
+
+An empty `results` array is not an error. Ask a broader query first, then add constraints such as product category, use case, finish, performance rating, or manufacturer.

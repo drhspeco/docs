@@ -1,0 +1,89 @@
+---
+title: "Quickstart: Connect Peeko MCP to Cursor"
+description: "Connect Cursor to Peeko's hosted MCP server using native browser OAuth."
+sidebarTitle: "Quickstart"
+---
+
+Peeko MCP lets AI clients search construction materials through Peeko's hosted MCP server. Cursor connects with native browser OAuth, so developers do not need to create or paste API keys.
+
+## Prerequisites
+
+- A Peeko account with MCP access enabled.
+- An active MCP credit balance.
+- Cursor with remote MCP server support.
+- The production MCP server URL: `https://api.getpeeko.ai/api/v1/mcp/server`.
+
+## Add Peeko to Cursor
+
+Create or edit your Cursor MCP configuration and add Peeko:
+
+```json
+{
+  "mcpServers": {
+    "peeko-material-search": {
+      "url": "https://api.getpeeko.ai/api/v1/mcp/server"
+    }
+  }
+}
+```
+
+Do not add an `Authorization` header. Cursor discovers Peeko's OAuth metadata, opens the browser authorization page, and stores the resulting access token for future tool calls.
+
+## Authorize in the browser
+
+After Cursor loads the server configuration:
+
+1. Cursor opens a Peeko authorization page in your browser.
+2. Sign in with the Peeko account that should own the MCP usage and credits.
+3. Review the requested `mcp` scope.
+4. Click **Approve**.
+5. The browser returns to Cursor and the MCP server becomes available.
+
+The authorization screen is served from the Peeko MCP console and shows the MCP client name, redirect URI, requested scope, signed-in account, and request expiration.
+
+## Run your first search
+
+Ask Cursor to search for a material, for example:
+
+```text
+Use Peeko MCP to find exterior porcelain tile with DCOF 0.42 or better.
+```
+
+Cursor should call `search_materials` and return products with titles, manufacturers, product URLs, image URLs when available, and source metadata.
+
+## Confirm the server shape
+
+MCP clients call the server over JSON-RPC. A successful `tools/list` response looks like this:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "search_materials",
+        "description": "Search construction materials and products",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string" },
+            "limit": { "type": "integer", "minimum": 1, "maximum": 20 },
+            "live_search": { "type": "boolean" }
+          },
+          "required": ["query"]
+        }
+      }
+    ]
+  }
+}
+```
+
+Tool responses include both text content for MCP clients and `structuredContent` for clients that render structured product results. See [Response Schemas](/mcp/response-schemas) for examples.
+
+## Next steps
+
+- [Authentication](/mcp/authentication)
+- [Tools](/mcp/tools)
+- [Credit Pricing and Billing](/mcp/billing)
+- [Rate Limits and Errors](/mcp/rate-limits-and-errors)

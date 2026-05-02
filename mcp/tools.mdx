@@ -1,0 +1,130 @@
+---
+title: "Tools"
+description: "Available Peeko MCP tools, input schemas, examples, and billable units."
+---
+
+Peeko MCP exposes four tools over the hosted JSON-RPC MCP endpoint:
+
+```text
+https://api.getpeeko.ai/api/v1/mcp/server
+```
+
+All tool calls require an OAuth-authorized MCP client. Users should connect through browser OAuth; they should not paste keys into local configuration.
+
+## `search_materials`
+
+Searches Peeko's construction material catalog. By default it uses Peeko's internal product retrieval pipeline. Set `live_search` to include live web results when broader discovery is useful.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": { "type": "string" },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "live_search": { "type": "boolean" }
+  },
+  "required": ["query"]
+}
+```
+
+Example arguments:
+
+```json
+{
+  "query": "exterior porcelain tile dcof 0.42",
+  "limit": 5,
+  "live_search": false
+}
+```
+
+Billable units: `1` for internal search, `3` when `live_search` is `true`.
+
+## `get_product`
+
+Retrieves details for a known Peeko product ID.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "product_id": { "type": "string" }
+  },
+  "required": ["product_id"]
+}
+```
+
+Example arguments:
+
+```json
+{
+  "product_id": "00000000-0000-4000-8000-000000000001"
+}
+```
+
+Billable units: `1`.
+
+## `find_alternatives`
+
+Finds alternatives from either a natural-language query or a known product ID. If `product_id` is supplied without `query`, Peeko builds a search query from the product's name and description.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": { "type": "string" },
+    "product_id": { "type": "string" },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 20 }
+  }
+}
+```
+
+Example arguments:
+
+```json
+{
+  "query": "low-VOC resilient flooring for healthcare corridors",
+  "limit": 5
+}
+```
+
+Billable units: `2`.
+
+## `compare_products`
+
+Compares two to five known Peeko products.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "product_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "maxItems": 5
+    }
+  },
+  "required": ["product_ids"]
+}
+```
+
+Example arguments:
+
+```json
+{
+  "product_ids": [
+    "00000000-0000-4000-8000-000000000001",
+    "00000000-0000-4000-8000-000000000002"
+  ]
+}
+```
+
+Billable units: `2`.

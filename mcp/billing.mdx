@@ -1,0 +1,52 @@
+---
+title: "Credit Pricing and Billing"
+description: "How prepaid MCP credits are purchased, consumed, and exhausted."
+sidebarTitle: "Credit Pricing and Billing"
+---
+
+Peeko MCP uses prepaid credit packs. Successful tool calls consume credits from the user's MCP balance.
+
+## Credit packs
+
+The current pack configuration is:
+
+| Pack | Price | Credits |
+| --- | ---: | ---: |
+| Starter | `$20` | `200` |
+| Growth | `$100` | `1200` |
+| Scale | `$500` | `7000` |
+
+Some non-production environments may expose a small test pack for internal QA. Public docs should only show production packs.
+
+## Tool costs
+
+| Tool | Credits |
+| --- | ---: |
+| `search_materials` | `1` |
+| `search_materials` with `live_search: true` | `3` |
+| `get_product` | `1` |
+| `find_alternatives` | `2` |
+| `compare_products` | `2` |
+
+## Buying credits
+
+Users buy credits from the MCP console billing page. Checkout is completed through Stripe, then Peeko applies credits after the payment webhook is processed.
+
+If the user returns from Checkout before the webhook finishes, the billing page may briefly show the previous balance. Refresh after a few seconds.
+
+## Exhausted credits
+
+When the credit balance is exhausted, Peeko rejects billable MCP calls. The MCP client receives a JSON-RPC error with the message:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "error": {
+    "code": -32603,
+    "message": "MCP credit balance exceeded"
+  }
+}
+```
+
+Users can buy another pack in the MCP console to resume tool usage.

@@ -1,0 +1,190 @@
+---
+title: "Response Schemas"
+description: "JSON-RPC response examples for Peeko MCP tool calls."
+---
+
+Peeko MCP returns JSON-RPC responses. Tool calls include two parallel payloads:
+
+- `content`: text blocks for MCP clients.
+- `structuredContent`: structured JSON for clients that render products or inspect fields programmatically.
+
+All examples below are synthetic and contain no real credentials.
+
+## `search_materials`
+
+Request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "tools/call",
+  "params": {
+    "name": "search_materials",
+    "arguments": {
+      "query": "exterior porcelain tile dcof 0.42",
+      "limit": 2
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 10,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\": true, \"query\": \"exterior porcelain tile dcof 0.42\", \"results\": []}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "query": "exterior porcelain tile dcof 0.42",
+      "results": [
+        {
+          "id": null,
+          "data": {
+            "url": "https://manufacturer.example/products/exterior-tile",
+            "title": "Exterior Grip Porcelain Tile",
+            "text": "Porcelain tile rated for exterior wet areas.",
+            "manufacturer": "Example Tile Co.",
+            "price": "",
+            "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"],
+            "source": "internal",
+            "source_search": "internal_rag",
+            "product_id": "00000000-0000-4000-8000-000000000001"
+          },
+          "created_at": null,
+          "updated_at": null,
+          "has_area": false,
+          "metadata": {}
+        }
+      ],
+      "search_filters": {},
+      "filters": {},
+      "summary": "Found 1 products",
+      "inbounds": {
+        "reference_images": [],
+        "reference_product_links": [],
+        "artifacts": [],
+        "ref_url": [],
+        "project_ids": []
+      },
+      "metadata": {
+        "results_count": 1
+      },
+      "error": null
+    }
+  }
+}
+```
+
+## `get_product`
+
+Request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 11,
+  "method": "tools/call",
+  "params": {
+    "name": "get_product",
+    "arguments": {
+      "product_id": "00000000-0000-4000-8000-000000000001"
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 11,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"00000000-0000-4000-8000-000000000001\", \"title\": \"Exterior Grip Porcelain Tile\"}"
+      }
+    ],
+    "structuredContent": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "title": "Exterior Grip Porcelain Tile",
+      "url": "https://manufacturer.example/products/exterior-tile",
+      "description": "Porcelain tile rated for exterior wet areas.",
+      "manufacturer": "Example Tile Co.",
+      "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"]
+    }
+  }
+}
+```
+
+## `find_alternatives`
+
+`find_alternatives` returns the same structured shape as `search_materials`.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 12,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\": true, \"query\": \"low-VOC resilient flooring\", \"results\": []}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "query": "low-VOC resilient flooring",
+      "results": [],
+      "search_filters": {},
+      "filters": {},
+      "summary": "Found 0 products",
+      "metadata": {
+        "results_count": 0
+      },
+      "error": null
+    }
+  }
+}
+```
+
+## `compare_products`
+
+Response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 13,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"products\": [{\"product_id\": \"00000000-0000-4000-8000-000000000001\"}]}"
+      }
+    ],
+    "structuredContent": {
+      "products": [
+        {
+          "product_id": "00000000-0000-4000-8000-000000000001",
+          "title": "Exterior Grip Porcelain Tile",
+          "manufacturer": "Example Tile Co.",
+          "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"],
+          "spec_count": 12,
+          "url": "https://manufacturer.example/products/exterior-tile"
+        }
+      ]
+    }
+  }
+}
+```

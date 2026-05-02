@@ -1,0 +1,68 @@
+---
+title: "RAG vs Live Search"
+description: "How internal RAG search differs from hybrid live web discovery in Peeko MCP."
+---
+
+`search_materials` can run in two modes: internal RAG search or hybrid live search.
+
+## Internal RAG search
+
+Internal RAG search is the default. Peeko searches indexed product embeddings, deduplicates results, and returns active products from the Peeko catalog.
+
+Use internal RAG search when:
+
+- You want high-confidence results from products Peeko already knows.
+- You need stable `product_id` values for `get_product` or `compare_products`.
+- You want the lowest credit cost.
+
+Example:
+
+```json
+{
+  "query": "acoustic ceiling tile healthcare",
+  "limit": 5
+}
+```
+
+Returned results use:
+
+```json
+{
+  "source": "internal",
+  "source_search": "internal_rag"
+}
+```
+
+If the vector search provider is unavailable, Peeko falls back to a database text search across product name, description, and manufacturer.
+
+## Hybrid live search
+
+Live search expands discovery with web results. Peeko runs internal RAG search, adds live web candidates, deduplicates by product ID or URL, and may queue new URLs for ingestion.
+
+Use live search when:
+
+- You are exploring broad market options.
+- You expect useful products outside Peeko's indexed catalog.
+- You can spend additional credits for wider discovery.
+
+Example:
+
+```json
+{
+  "query": "bio-based resilient flooring commercial",
+  "limit": 10,
+  "live_search": true
+}
+```
+
+Live web candidates use:
+
+```json
+{
+  "source": "web",
+  "source_search": "serper",
+  "product_id": null
+}
+```
+
+Hybrid live search costs `3` credits per successful `search_materials` call. Internal RAG search costs `1` credit.

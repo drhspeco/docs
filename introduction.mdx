@@ -1,57 +1,63 @@
 ---
-title: "Getpeeko: AI-powered behavioral analytics platform"
-description: "Getpeeko is an AI-powered platform for deep audience insights. Learn how to set up your workspace, run analyses, and surface behavioral findings."
+title: "Peeko MCP Developer Platform"
+description: "Connect AI agents to Peeko's construction material search platform with native OAuth, structured tool responses, and prepaid MCP credits."
 ---
 
-Getpeeko is an AI-powered platform that gives you deep visibility into how your audience thinks, behaves, and engages. By combining behavioral analytics with intelligent insights, Getpeeko helps product teams, marketers, and analysts make better decisions faster — without needing a data science background.
+Peeko MCP lets Cursor and other MCP-compatible AI clients search construction materials through Peeko's hosted developer platform. Agents can find products, retrieve product details, compare options, and explore alternatives while usage is tracked against prepaid credits.
 
 <CardGroup cols={2}>
-  <Card title="Quick Start" icon="rocket" href="/quickstart">
-    Set up your account and run your first analysis in minutes.
+  <Card title="Quickstart" icon="rocket" href="/mcp/developer-quickstart">
+    Connect Cursor to Peeko MCP with native browser OAuth.
   </Card>
-  <Card title="Core Concepts" icon="lightbulb" href="/concepts/overview">
-    Learn the key ideas behind workspaces, projects, and insights.
+  <Card title="Authentication" icon="lock" href="/mcp/authentication">
+    Learn how OAuth discovery, registration, consent, and token exchange work.
   </Card>
-  <Card title="Guides" icon="map" href="/guides/first-project">
-    Step-by-step walkthroughs for common use cases.
+  <Card title="Tools" icon="wrench" href="/mcp/tools">
+    Review available MCP tools, input schemas, and credit costs.
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/introduction">
-    Integrate Getpeeko into your stack with the REST API.
+  <Card title="Billing" icon="credit-card" href="/mcp/billing">
+    Understand prepaid credit packs and how tool calls consume credits.
   </Card>
 </CardGroup>
 
 ## How it works
 
-Getpeeko organizes your work into **projects** inside a shared **workspace**. Each project connects to your data sources, runs AI-powered analysis, and surfaces actionable insights about your audience.
+Peeko exposes a hosted MCP server at:
+
+```text
+https://api.getpeeko.ai/api/v1/mcp/server
+```
+
+MCP clients discover Peeko's OAuth metadata, open a browser consent page, and then call the server with an OAuth-issued bearer token. Developers do not need to create or paste API keys.
 
 <Steps>
-  <Step title="Create your account">
-    Sign up at [app.getpeeko.ai](https://app.getpeeko.ai) and set up your workspace.
+  <Step title="Add Peeko to Cursor">
+    Configure Cursor with the hosted Peeko MCP server URL.
   </Step>
-  <Step title="Start a project">
-    Create a project and define your target audience or data source.
+  <Step title="Approve access">
+    Sign in to Peeko, review the MCP client request, and approve the `mcp` scope.
   </Step>
-  <Step title="Run an analysis">
-    Let Getpeeko's AI engine surface behavioral patterns and insights.
+  <Step title="Run material searches">
+    Ask your MCP client to search for construction products, alternatives, details, or comparisons.
   </Step>
-  <Step title="Share and act">
-    Export results, share reports with your team, and set up alerts.
+  <Step title="Track usage">
+    Successful tool calls consume credits from your MCP balance.
   </Step>
 </Steps>
 
-## Key features
+## Key docs
 
 <CardGroup cols={2}>
-  <Card title="AI Insights" icon="brain">
-    Automatically surface behavioral patterns and trends from your audience data.
+  <Card title="Response schemas" icon="brackets-curly" href="/mcp/response-schemas">
+    See JSON-RPC examples for text and structured tool responses.
   </Card>
-  <Card title="Team Workspaces" icon="users">
-    Collaborate with your team in shared workspaces with role-based access.
+  <Card title="RAG vs live search" icon="magnifying-glass" href="/mcp/rag-vs-live-search">
+    Compare internal RAG search with hybrid live web discovery.
   </Card>
-  <Card title="Integrations" icon="plug">
-    Connect Getpeeko to your existing tools and data sources.
+  <Card title="Rate limits and errors" icon="triangle-exclamation" href="/mcp/rate-limits-and-errors">
+    Troubleshoot authentication, credit, validation, and product lookup errors.
   </Card>
-  <Card title="REST API" icon="terminal">
-    Automate workflows and embed Getpeeko capabilities in your applications.
+  <Card title="Changelog" icon="clock-rotate-left" href="/mcp/changelog">
+    Follow recent MCP platform changes.
   </Card>
 </CardGroup>
