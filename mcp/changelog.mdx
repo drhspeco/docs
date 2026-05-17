@@ -3,6 +3,36 @@ title: "Changelog"
 description: "Recent changes to the Peeko MCP developer platform."
 ---
 
+## 2026-05-17
+
+<Update label="search_materials">
+  - Added `manufacturer` filter (case-insensitive exact match).
+  - Added `availability_status` filter (`in_stock`, `out_of_stock`, `backorder`, `discontinued`, `available_on_request`).
+  - Added `min_score` parameter — cosine similarity floor to tighten result quality.
+  - Added cursor-based pagination: `metadata.next_cursor` in the response; pass as `cursor` in the next call (cap: 100 results per search).
+  - URL deduplication now strips tracking parameters (`srsltid`, `utm_*`, `gclid`, `fbclid`) so the same product no longer appears twice.
+</Update>
+
+<Update label="get_product">
+  - Response now includes `sku`, `vendor`, `availability_status`, `lead_time`, `pricing` (tiered), `specifications` (grouped), `documents`, and `videos`.
+  - Inactive products now return a 404 instead of leaking stale data.
+</Update>
+
+<Update label="find_alternatives">
+  - Source product is now excluded from its own alternatives (was a bug).
+  - Added `manufacturer` filter to constrain alternatives to a specific brand.
+</Update>
+
+<Update label="compare_products">
+  - Response now includes `spec_matrix` (spec type → per-product value) for side-by-side rendering.
+  - Response now includes `best_price` per product.
+  - Response now includes `missing_product_ids` for any requested IDs that could not be resolved.
+</Update>
+
+<Update label="Tool schemas">
+  - All four tools now advertise an `outputSchema` in `tools/list` responses.
+</Update>
+
 ## 2026-05-01
 
 - Added native browser OAuth for remote MCP clients.

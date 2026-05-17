@@ -41,11 +41,23 @@
                                         "url": "https://example.com/products/city-district-emerald",
                                         "description": "A bright emerald ceramic subway tile suitable for interior walls.",
                                         "manufacturer": "Iris Ceramica",
+                                        "sku": "CD-EM-2X10-MATTE",
+                                        "vendor": "Tile Distributor Co.",
+                                        "availability_status": "in_stock",
+                                        "lead_time": "3-5 business days",
                                         "image_urls": [
                                             "https://example.com/images/city-district-emerald.jpg"
                                         ],
-                                        "pricing": [],
-                                        "specifications": []
+                                        "pricing": [
+                                            { "price_type": "list", "price": "4.99", "currency": "USD" }
+                                        ],
+                                        "specifications": [
+                                            { "type": "size", "value": "2x10", "unit": "in" },
+                                            { "type": "finish", "value": "Matte", "unit": null },
+                                            { "type": "dcof", "value": "0.42", "unit": null }
+                                        ],
+                                        "documents": [],
+                                        "videos": []
                                     },
                                     "errors": [],
                                     "meta": {
@@ -255,13 +267,33 @@
                                                 "title": "City District Emerald Matte 2x10",
                                                 "url": "https://example.com/products/city-district-emerald",
                                                 "manufacturer": "Iris Ceramica",
-                                                "image_urls": [
-                                                    "https://example.com/images/city-district-emerald.jpg"
-                                                ],
-                                                "availability_status": "available",
-                                                "spec_count": 8
+                                                "image_urls": ["https://example.com/images/city-district-emerald.jpg"],
+                                                "availability_status": "in_stock",
+                                                "sku": "CD-EM-2X10-MATTE",
+                                                "best_price": { "price": "4.99", "currency": "USD" }
+                                            },
+                                            {
+                                                "product_id": "4c90c3cc-0d44-4b50-8888-ddd25736052b",
+                                                "title": "City District Cobalt Matte 2x10",
+                                                "url": "https://example.com/products/city-district-cobalt",
+                                                "manufacturer": "Iris Ceramica",
+                                                "image_urls": [],
+                                                "availability_status": "backorder",
+                                                "sku": "CD-CO-2X10-MATTE",
+                                                "best_price": { "price": "4.49", "currency": "USD" }
                                             }
-                                        ]
+                                        ],
+                                        "spec_matrix": {
+                                            "size": {
+                                                "3c90c3cc-0d44-4b50-8888-ddd25736052a": "2x10 in",
+                                                "4c90c3cc-0d44-4b50-8888-ddd25736052b": "2x10 in"
+                                            },
+                                            "dcof": {
+                                                "3c90c3cc-0d44-4b50-8888-ddd25736052a": "0.42",
+                                                "4c90c3cc-0d44-4b50-8888-ddd25736052b": "0.44"
+                                            }
+                                        },
+                                        "missing_product_ids": []
                                     },
                                     "errors": [],
                                     "meta": {
@@ -298,13 +330,23 @@
                                 "Basic material search": {
                                     "summary": "Search by product need",
                                     "value": {
-                                        "query": "brighter version of emerald subway tile",
+                                        "query": "exterior porcelain tile dcof 0.42",
                                         "limit": 5,
                                         "live_search": false
                                     }
                                 },
+                                "Filtered search": {
+                                    "summary": "Manufacturer + availability filter",
+                                    "value": {
+                                        "query": "exterior porcelain tile dcof 0.42",
+                                        "limit": 5,
+                                        "manufacturer": "Daltile",
+                                        "availability_status": "in_stock",
+                                        "min_score": 0.72
+                                    }
+                                },
                                 "Live web search": {
-                                    "summary": "Broader live discovery",
+                                    "summary": "Broader live discovery (3 credits)",
                                     "value": {
                                         "query": "bio-based resilient flooring for healthcare corridors",
                                         "limit": 5,
@@ -372,21 +414,23 @@
                                 },
                                 "example": {
                                     "success": true,
-                                    "query": "brighter version of emerald subway tile",
+                                    "query": "exterior porcelain tile dcof 0.42",
                                     "results": [
                                         {
                                             "id": "3c90c3cc-0d44-4b50-8888-ddd25736052a",
                                             "title": "City District Emerald Matte 2x10",
-                                            "manufacturer": "Iris Ceramica",
+                                            "manufacturer": "Daltile",
                                             "url": "https://example.com/products/city-district-emerald",
-                                            "text": "A bright emerald ceramic subway tile suitable for interior walls.",
+                                            "text": "Exterior porcelain tile rated DCOF 0.42 for wet areas.",
                                             "image_urls": [
                                                 "https://example.com/images/city-district-emerald.jpg"
-                                            ]
+                                            ],
+                                            "availability_status": "in_stock"
                                         }
                                     ],
                                     "metadata": {
-                                        "results_count": 1
+                                        "results_count": 1,
+                                        "next_cursor": "eyJvZmZzZXQiOiA1fQ"
                                     }
                                 }
                             }
@@ -632,6 +676,11 @@
                         "maximum": 20,
                         "minimum": 1,
                         "default": 5
+                    },
+                    "manufacturer": {
+                        "type": "string",
+                        "description": "Constrain alternatives to a specific manufacturer.",
+                        "example": "Iris Ceramica"
                     }
                 },
                 "description": "Find alternatives by query or by a product ID returned from search_materials."
@@ -667,29 +716,43 @@
                         "minLength": 1,
                         "maxLength": 5000,
                         "description": "Describe what you want to find.",
-                        "example": "brighter version of emerald subway tile"
+                        "example": "exterior porcelain tile dcof 0.42"
                     },
                     "limit": {
                         "type": "integer",
                         "maximum": 20,
                         "minimum": 1,
                         "default": 10,
-                        "description": "Maximum number of results to return.",
+                        "description": "Maximum results per page.",
                         "example": 5
                     },
                     "live_search": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Set true to include live web discovery. Live search costs more credits.",
+                        "description": "Include live web discovery. Costs 3 credits instead of 1.",
                         "example": false
                     },
-                    "filters": {
-                        "type": "object",
-                        "additionalProperties": {}
+                    "manufacturer": {
+                        "type": "string",
+                        "description": "Case-insensitive exact manufacturer filter (e.g. \"Daltile\").",
+                        "example": "Daltile"
                     },
-                    "project_context": {
-                        "type": "object",
-                        "additionalProperties": {}
+                    "availability_status": {
+                        "type": "string",
+                        "enum": ["in_stock", "out_of_stock", "backorder", "discontinued", "available_on_request"],
+                        "description": "Filter by product availability status.",
+                        "example": "in_stock"
+                    },
+                    "min_score": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Cosine similarity floor (0–1). Higher values return fewer but more relevant results.",
+                        "example": 0.72
+                    },
+                    "cursor": {
+                        "type": "string",
+                        "description": "Opaque pagination token from metadata.next_cursor. Pass to fetch the next page of the same query."
                     }
                 },
                 "required": [

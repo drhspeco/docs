@@ -2,10 +2,20 @@
   "$schema": "https://mintlify.com/docs.json",
   "name": "Peeko Docs",
   "theme": "almond",
+  "logo": {
+    "light": "https://media.brand.dev/b7eecca6-40ef-4d9e-b4cb-43dcd3574be6.png",
+    "dark": "https://media.brand.dev/b7eecca6-40ef-4d9e-b4cb-43dcd3574be6.png"
+  },
   "favicon": "https://media.brand.dev/b7eecca6-40ef-4d9e-b4cb-43dcd3574be6.png",
   "colors": {
     "primary": "#5b6354",
     "light": "#215333"
+  },
+  "topbar": {
+    "style": "announcement",
+    "announcement": {
+      "text": "May 17: search filters, cursor pagination, richer product detail, and spec matrix comparison. [See changelog →](/mcp/changelog)"
+    }
   },
   "navbar": {
     "links": [
@@ -68,6 +78,8 @@
     }
   },
   "footer": {
-    "socials": {}
+    "socials": {
+      "website": "https://www.getpeeko.ai"
+    }
   }
 }

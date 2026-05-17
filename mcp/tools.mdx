@@ -9,55 +9,67 @@ Peeko MCP exposes four tools over the hosted JSON-RPC MCP endpoint:
 https://api.getpeeko.ai/api/v1/mcp/server
 ```
 
-All tool calls require an OAuth-authorized MCP client. Users should connect through browser OAuth; they should not paste keys into local configuration.
+All tool calls require an OAuth-authorized MCP client or an MCP API key. Connect through browser OAuth — no API key pasting required.
 
 ## `search_materials`
 
-Searches Peeko's construction material catalog. By default it uses Peeko's internal product retrieval pipeline. Set `live_search` to include live web results when broader discovery is useful.
+Searches Peeko's construction material catalog using semantic vector search. Optional filters narrow results without changing the query. Cursor-based pagination lets you walk through more than one page.
 
-Input schema:
+<ParamField body="query" type="string" required>
+  Natural-language description of what you want to find.
+</ParamField>
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "query": { "type": "string" },
-    "limit": { "type": "integer", "minimum": 1, "maximum": 20 },
-    "live_search": { "type": "boolean" }
-  },
-  "required": ["query"]
-}
-```
+<ParamField body="limit" type="integer" default="10">
+  Results per page. Min `1`, max `20`.
+</ParamField>
 
-Example arguments:
+<ParamField body="live_search" type="boolean" default="false">
+  Include live web discovery. Costs **3 credits** instead of 1.
+</ParamField>
+
+<ParamField body="manufacturer" type="string">
+  Case-insensitive exact manufacturer filter (e.g. `"Daltile"`).
+</ParamField>
+
+<ParamField body="availability_status" type="string">
+  One of `in_stock`, `out_of_stock`, `backorder`, `discontinued`, `available_on_request`.
+</ParamField>
+
+<ParamField body="min_score" type="number">
+  Cosine similarity floor between `0` and `1`. Higher values return fewer but more relevant results. Start around `0.6`–`0.75`.
+</ParamField>
+
+<ParamField body="cursor" type="string">
+  Opaque token from `metadata.next_cursor`. Pass to fetch the next page of the same query and filters.
+</ParamField>
+
+Example:
 
 ```json
 {
   "query": "exterior porcelain tile dcof 0.42",
   "limit": 5,
-  "live_search": false
+  "manufacturer": "Daltile",
+  "availability_status": "in_stock",
+  "min_score": 0.72
 }
 ```
 
-Billable units: `1` for internal search, `3` when `live_search` is `true`.
+**Pagination:** when `metadata.next_cursor` is non-null in the response, pass it as `cursor` in the next call with the same `query` and filters to fetch the next page. Cursors are bound to the exact query and filter combination.
+
+**Billable units:** `1` for internal search, `3` when `live_search` is `true`.
+
+---
 
 ## `get_product`
 
-Retrieves details for a known Peeko product ID.
+Retrieves full details for a known Peeko product ID, including pricing tiers, structured specifications, linked documents, and availability.
 
-Input schema:
+<ParamField body="product_id" type="string" required>
+  UUID from `results[].id` in a `search_materials` response.
+</ParamField>
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "product_id": { "type": "string" }
-  },
-  "required": ["product_id"]
-}
-```
-
-Example arguments:
+Example:
 
 ```json
 {
@@ -65,58 +77,52 @@ Example arguments:
 }
 ```
 
-Billable units: `1`.
+**Billable units:** `1`.
+
+---
 
 ## `find_alternatives`
 
-Finds alternatives from either a natural-language query or a known product ID. If `product_id` is supplied without `query`, Peeko builds a search query from the product's name and description.
+Finds alternative products. Pass `product_id` to get products semantically similar to a known product — the source product is always excluded from results. Pass `query` for a free-text similarity search.
 
-Input schema:
+<ParamField body="product_id" type="string">
+  UUID from a previous `search_materials` result.
+</ParamField>
+
+<ParamField body="query" type="string">
+  Free-text alternatives query. If `product_id` is supplied without `query`, Peeko builds the query from the product's name and description.
+</ParamField>
+
+<ParamField body="limit" type="integer" default="5">
+  Max results. Min `1`, max `20`.
+</ParamField>
+
+<ParamField body="manufacturer" type="string">
+  Constrain alternatives to a specific manufacturer.
+</ParamField>
+
+Example:
 
 ```json
 {
-  "type": "object",
-  "properties": {
-    "query": { "type": "string" },
-    "product_id": { "type": "string" },
-    "limit": { "type": "integer", "minimum": 1, "maximum": 20 }
-  }
-}
-```
-
-Example arguments:
-
-```json
-{
-  "query": "low-VOC resilient flooring for healthcare corridors",
+  "product_id": "00000000-0000-4000-8000-000000000001",
   "limit": 5
 }
 ```
 
-Billable units: `2`.
+**Billable units:** `2`.
+
+---
 
 ## `compare_products`
 
-Compares two to five known Peeko products.
+Compares two to five known Peeko products side-by-side. Returns a `spec_matrix` for rendering a comparison table, `best_price` per product, and a `missing_product_ids` list for any IDs that could not be resolved.
 
-Input schema:
+<ParamField body="product_ids" type="string[]" required>
+  Two to five product UUIDs from `results[].id` in `search_materials`.
+</ParamField>
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "product_ids": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 2,
-      "maxItems": 5
-    }
-  },
-  "required": ["product_ids"]
-}
-```
-
-Example arguments:
+Example:
 
 ```json
 {
@@ -127,4 +133,4 @@ Example arguments:
 }
 ```
 
-Billable units: `2`.
+**Billable units:** `2`.

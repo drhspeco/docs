@@ -5,10 +5,10 @@ description: "JSON-RPC response examples for Peeko MCP tool calls."
 
 Peeko MCP returns JSON-RPC responses. Tool calls include two parallel payloads:
 
-- `content`: text blocks for MCP clients.
+- `content`: text blocks for MCP clients that only render text.
 - `structuredContent`: structured JSON for clients that render products or inspect fields programmatically.
 
-All examples below are synthetic and contain no real credentials.
+All examples below are synthetic and contain no real credentials or product data.
 
 ## `search_materials`
 
@@ -23,7 +23,9 @@ Request:
     "name": "search_materials",
     "arguments": {
       "query": "exterior porcelain tile dcof 0.42",
-      "limit": 2
+      "limit": 2,
+      "manufacturer": "Daltile",
+      "min_score": 0.72
     }
   }
 }
@@ -39,7 +41,7 @@ Response:
     "content": [
       {
         "type": "text",
-        "text": "{\"success\": true, \"query\": \"exterior porcelain tile dcof 0.42\", \"results\": []}"
+        "text": "{\"success\": true, \"query\": \"exterior porcelain tile dcof 0.42\", \"results\": [...]}"
       }
     ],
     "structuredContent": {
@@ -51,13 +53,14 @@ Response:
           "data": {
             "url": "https://manufacturer.example/products/exterior-tile",
             "title": "Exterior Grip Porcelain Tile",
-            "text": "Porcelain tile rated for exterior wet areas.",
-            "manufacturer": "Example Tile Co.",
-            "price": "",
+            "text": "Porcelain tile rated for exterior wet areas. DCOF 0.42.",
+            "manufacturer": "Daltile",
+            "price": "4.99",
             "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"],
             "source": "internal",
             "source_search": "internal_rag",
-            "product_id": "00000000-0000-4000-8000-000000000001"
+            "product_id": "00000000-0000-4000-8000-000000000001",
+            "availability_status": "in_stock"
           },
           "created_at": null,
           "updated_at": null,
@@ -76,13 +79,18 @@ Response:
         "project_ids": []
       },
       "metadata": {
-        "results_count": 1
+        "results_count": 1,
+        "next_cursor": "eyJvZmZzZXQiOiAyLCAicWhhc2giOiAiYWJjZCJ9"
       },
       "error": null
     }
   }
 }
 ```
+
+When `metadata.next_cursor` is non-null, pass it as `cursor` in the next call to get the next page.
+
+---
 
 ## `get_product`
 
@@ -120,16 +128,36 @@ Response:
       "title": "Exterior Grip Porcelain Tile",
       "url": "https://manufacturer.example/products/exterior-tile",
       "description": "Porcelain tile rated for exterior wet areas.",
-      "manufacturer": "Example Tile Co.",
-      "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"]
+      "manufacturer": "Daltile",
+      "sku": "EG-PRT-12X24",
+      "vendor": "Tile Supply Co.",
+      "availability_status": "in_stock",
+      "lead_time": "3–5 business days",
+      "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"],
+      "pricing": [
+        { "price_type": "list", "price": "4.99", "currency": "USD" },
+        { "price_type": "contractor", "price": "3.99", "currency": "USD" }
+      ],
+      "specifications": [
+        { "type": "size", "value": "12x24", "unit": "in" },
+        { "type": "finish", "value": "Matte", "unit": null },
+        { "type": "dcof", "value": "0.42", "unit": null },
+        { "type": "thickness", "value": "9.5", "unit": "mm" }
+      ],
+      "documents": [
+        { "title": "Technical Data Sheet", "url": "https://manufacturer.example/docs/tds.pdf", "type": "spec_sheet" }
+      ],
+      "videos": []
     }
   }
 }
 ```
 
+---
+
 ## `find_alternatives`
 
-`find_alternatives` returns the same structured shape as `search_materials`.
+`find_alternatives` returns the same shape as `search_materials`, with `metadata.next_cursor` for pagination. The source product is excluded from results.
 
 ```json
 {
@@ -139,18 +167,19 @@ Response:
     "content": [
       {
         "type": "text",
-        "text": "{\"success\": true, \"query\": \"low-VOC resilient flooring\", \"results\": []}"
+        "text": "{\"success\": true, \"query\": \"exterior porcelain tile dcof 0.42\", \"results\": [...]}"
       }
     ],
     "structuredContent": {
       "success": true,
-      "query": "low-VOC resilient flooring",
+      "query": "exterior porcelain tile dcof 0.42 — alternatives",
       "results": [],
       "search_filters": {},
       "filters": {},
       "summary": "Found 0 products",
       "metadata": {
-        "results_count": 0
+        "results_count": 0,
+        "next_cursor": null
       },
       "error": null
     }
@@ -158,9 +187,11 @@ Response:
 }
 ```
 
+---
+
 ## `compare_products`
 
-Response:
+Response includes a `spec_matrix` for side-by-side rendering, `best_price` per product, and `missing_product_ids` for any IDs that could not be resolved.
 
 ```json
 {
@@ -178,12 +209,39 @@ Response:
         {
           "product_id": "00000000-0000-4000-8000-000000000001",
           "title": "Exterior Grip Porcelain Tile",
-          "manufacturer": "Example Tile Co.",
+          "manufacturer": "Daltile",
           "image_urls": ["https://manufacturer.example/images/exterior-tile.jpg"],
-          "spec_count": 12,
+          "availability_status": "in_stock",
+          "sku": "EG-PRT-12X24",
+          "best_price": { "price": "4.99", "currency": "USD" },
           "url": "https://manufacturer.example/products/exterior-tile"
+        },
+        {
+          "product_id": "00000000-0000-4000-8000-000000000002",
+          "title": "ProGrip Outdoor Porcelain 12x24",
+          "manufacturer": "Daltile",
+          "image_urls": [],
+          "availability_status": "backorder",
+          "sku": "PG-OUT-12X24",
+          "best_price": { "price": "5.49", "currency": "USD" },
+          "url": "https://manufacturer.example/products/progrip-outdoor"
         }
-      ]
+      ],
+      "spec_matrix": {
+        "size": {
+          "00000000-0000-4000-8000-000000000001": "12x24 in",
+          "00000000-0000-4000-8000-000000000002": "12x24 in"
+        },
+        "dcof": {
+          "00000000-0000-4000-8000-000000000001": "0.42",
+          "00000000-0000-4000-8000-000000000002": "0.50"
+        },
+        "finish": {
+          "00000000-0000-4000-8000-000000000001": "Matte",
+          "00000000-0000-4000-8000-000000000002": "Textured"
+        }
+      },
+      "missing_product_ids": []
     }
   }
 }
