@@ -1,0 +1,65 @@
+---
+title: "Playground"
+description: "Try Peeko MCP search live, right from the docs. No login, no API key."
+sidebarTitle: "Playground"
+---
+
+This is the same search backend that powers the [`search_materials`](/mcp/tools#search-materials) MCP tool, exposed through a public, rate-limited endpoint so you can feel it before you wire it into your agent.
+
+<Tip>
+  Searches here run as anonymous traffic and are aggressively rate-limited per IP. They do not consume MCP credits, do not create usage events, and do not affect your account billing. They will not appear in your dashboard.
+</Tip>
+
+<Frame>
+  <iframe
+    src="https://app.getpeeko.ai/embed/search-demo"
+    title="Peeko MCP Search Playground"
+    style={{
+      width: '100%',
+      height: '760px',
+      border: '0',
+      borderRadius: '12px',
+      background: '#f6f8f5',
+    }}
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
+</Frame>
+
+Need more headroom or want the full-page experience? Open the standalone playground at [app.getpeeko.ai/playground](https://app.getpeeko.ai/playground).
+
+## What you can try
+
+- **Free-text queries** — natural-language descriptions like `Low-VOC resilient flooring for healthcare corridors` or `Exterior porcelain tile DCOF 0.42`.
+- **Manufacturer filter** — narrow results to a specific brand (e.g. `Daltile`).
+- **Availability filter** — restrict to `in_stock`, `out_of_stock`, or `discontinued` SKUs.
+- **Live web search toggle** — flip from Peeko's indexed catalog (RAG) to live web crawl when you want the broadest coverage. See [RAG vs live search](/mcp/rag-vs-live-search) for the trade-offs.
+
+## Limits
+
+The public playground enforces strict caps so it stays available to everyone:
+
+| Limit | Value |
+| --- | --- |
+| Max query length | 200 characters |
+| Max results per call | 10 |
+| Per-IP rate | A few requests per minute |
+| Live web search | Available, but rate-limited harder |
+
+If you hit a `429 Too Many Requests`, wait a minute and try again — or [get an API key](https://app.getpeeko.ai) to remove the limits, get richer responses, and unlock the other MCP tools ([`get_product`](/mcp/tools#get-product), [`find_alternatives`](/mcp/tools#find-alternatives), [`compare_products`](/mcp/tools#compare-products)).
+
+## Wire it into your agent
+
+When you're ready to move from "try it" to "ship it", everything you saw here is available over MCP with one config block:
+
+```json
+{
+  "mcpServers": {
+    "peeko-material-search": {
+      "url": "https://api.getpeeko.ai/api/v1/mcp/server"
+    }
+  }
+}
+```
+
+Follow the [Quickstart](/mcp/developer-quickstart) for the full Cursor + browser OAuth flow, or use the [REST API](/api-reference) directly if you're not using MCP.

@@ -14,7 +14,7 @@
   "topbar": {
     "style": "announcement",
     "announcement": {
-      "text": "May 17: search filters, cursor pagination, richer product detail, and spec matrix comparison. [See changelog →](/mcp/changelog)"
+      "text": "New: try Peeko MCP search right from the docs. [Open the playground →](/mcp/playground)"
     }
   },
   "navbar": {
@@ -40,6 +40,7 @@
             "pages": [
               "introduction",
               "mcp/developer-quickstart",
+              "mcp/playground",
               "mcp/authentication",
               "mcp/tools",
               "mcp/billing",
